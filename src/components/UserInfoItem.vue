@@ -97,35 +97,28 @@
         </dl>
       </section>
 
-      <section v-if="userInfo.battery !== null" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔋 Battery Status</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Battery Level" :value="userInfo.battery?.level !== undefined ? `${(userInfo.battery.level * 100).toFixed(0)}%` : 'N/A'" />
-          <LabelValueItem label="Charging" :value="userInfo.battery?.charging" />
-          <LabelValueItem label="Charging Time" :value="userInfo.battery?.chargingTime === Infinity ? 'Infinity' : userInfo.battery?.chargingTime" />
-          <LabelValueItem label="Discharging Time" :value="userInfo.battery?.dischargingTime === Infinity ? 'Infinity' : userInfo.battery?.dischargingTime" />
-        </dl>
-      </section>
+<template>
+  <template v-if="userInfo.battery">
+    <template v-if="'level' in userInfo.battery">
+      <LabelValueItem label="Battery Level" :value="`${(userInfo.battery.level * 100).toFixed(0)}%`" />
+      <LabelValueItem label="Charging" :value="userInfo.battery.charging ? 'Yes' : 'No'" />
+      <LabelValueItem label="Charging Time" :value="userInfo.battery.chargingTime === Infinity ? 'Infinity' : userInfo.battery.chargingTime.toString()" />
+      <LabelValueItem label="Discharging Time" :value="userInfo.battery.dischargingTime === Infinity ? 'Infinity' : userInfo.battery.dischargingTime.toString()" />
+    </template>
+    <template v-else-if="'error' in userInfo.battery">
+      <LabelValueItem label="Battery Status" :value="userInfo.battery.error" />
+    </template>
+    <template v-else>
+      <LabelValueItem label="Battery Status" :value="'N/A'" />
+    </template>
+  </template>
+  <template v-else>
+    <LabelValueItem label="Battery Status" :value="'N/A'" />
+  </template>
 
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">📤 HTTP Headers (Examples)</h2>
-        <p class="text-sm text-gray-400 mb-3">
-          Note: Full incoming HTTP headers are typically only accessible server-side. 
-          Below are examples of common headers your browser <span class="italic">might</span> send with requests.
-        </p>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <LabelValueItem label="Accept" value="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" />
-            <LabelValueItem label="Accept-Language" :value="userInfo.language || 'en-US,en;q=0.5'" />
-            <LabelValueItem label="Accept-Encoding" value="gzip, deflate, br" />
-            <LabelValueItem label="User-Agent" :value="userInfo.userAgent" />
-            <LabelValueItem label="Connection" value="keep-alive" />
-            <LabelValueItem label="Upgrade-Insecure-Requests" value="1 (typically for initial HTTP request)" />
-            <LabelValueItem label="Sec-Fetch-Dest" value="document" />
-            <LabelValueItem label="Sec-Fetch-Mode" value="navigate" />
-            <LabelValueItem label="Sec-Fetch-Site" value="none / same-origin / cross-site" />
-            <LabelValueItem label="Sec-Fetch-User" value="?1 (indicates user activation)" />
-        </dl>
-      </section>
+  </template>
+
+      
 
       <footer class="text-center pt-8 pb-4 text-sm text-gray-500">
         <p>&copy; {{ new Date().getFullYear() }} WhoAmI. Information gathered from your browser.</p>
@@ -237,15 +230,15 @@ const isLoading = ref(true);
 const ipError = ref<string | null>(null);
 
 // Helper to safely get a value or return 'N/A'
-const getSafe = <T>(getter: () => T, defaultValue: any = 'N/A'): T | string => {
-  try {
-    const value = getter();
-    return value === undefined || value === null ? defaultValue : value;
-  } catch (error) {
-    console.warn('Error getting value:', error);
-    return defaultValue;
-  }
-};
+// const getSafe = <T>(getter: () => T, defaultValue: any = 'N/A'): T | string => {
+//   try {
+//     const value = getter();
+//     return value === undefined || value === null ? defaultValue : value;
+//   } catch (error) {
+//     console.warn('Error getting value:', error);
+//     return defaultValue;
+//   }
+// };
 
 
 onMounted(async () => {
@@ -254,7 +247,7 @@ onMounted(async () => {
 
   // --- Fetch IP Information ---
   try {
-    const response = await fetch('[https://ipapi.co/json/](https://ipapi.co/json/)');
+    const response = await fetch('https://ipapi.co/json/'); 
     if (!response.ok) {
       throw new Error(`Failed to fetch IP info: ${response.statusText}`);
     }
