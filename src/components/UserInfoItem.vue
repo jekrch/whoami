@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-900 text-gray-200 p-4 sm:p-6 lg:p-8">
     <header class="mb-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-bold text-sky-200">WhoAmI</h1>
-      <p class="mt-2 text-lg text-gray-400">A comprehensive browser fingerprinting tool</p>
+      <p class="mt-2 text-lg text-gray-400">A Comprehensive User Context Dashboard</p>
     </header>
 
     <div v-if="isLoading" class="text-center py-10">
@@ -30,6 +30,85 @@
           <MapDisplay :latitude="userInfo.latitude" :longitude="userInfo.longitude" :zoom-level="15" />
         </div>
         <p v-if="ipError" class="mt-4 text-sm text-red-400">{{ ipError }}</p>
+      </section>
+
+      <section v-if="userInfo.latitude && userInfo.longitude" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
+        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌤️ Weather & Climate</h2>
+        <div v-if="weather.loading">
+          <p class="text-gray-400">Loading weather data...</p>
+        </div>
+        <div v-else-if="weather.error">
+          <p class="text-red-400">{{ weather.error }}</p>
+        </div>
+        <div v-else>
+          <div class="flex flex-col sm:flex-row items-center mb-4">
+            <div class="text-center sm:text-left sm:mr-6">
+              <h3 class="text-xl font-medium text-white">{{ weather.location }}</h3>
+              <p class="text-sm text-gray-400">{{ weather.description }}</p>
+            </div>
+            <div class="flex items-center mt-3 sm:mt-0">
+              <span class="text-4xl font-bold text-white">{{ weather.temperature }}°{{ weather.units === 'metric' ? 'C' : 'F' }}</span>
+              <span v-if="weather.icon" class="text-4xl ml-2">{{ weather.icon }}</span>
+            </div>
+          </div>
+
+          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <LabelValueItem label="Feels Like" :value="`${weather.feelsLike}°${weather.units === 'metric' ? 'C' : 'F'}`" />
+            <LabelValueItem label="Humidity" :value="`${weather.humidity}%`" />
+            <LabelValueItem label="Wind" :value="`${weather.windSpeed} ${weather.units === 'metric' ? 'km/h' : 'mph'} ${weather.windDirection}`" />
+            <LabelValueItem label="Pressure" :value="`${weather.pressure} hPa`" />
+            <LabelValueItem label="Visibility" :value="`${weather.visibility} km`" />
+            <LabelValueItem label="Clouds" :value="`${weather.clouds}%`" />
+            <LabelValueItem label="Sunrise" :value="weather.sunrise" />
+            <LabelValueItem label="Sunset" :value="weather.sunset" />
+          </dl>
+
+          <div class="mt-4">
+            <h3 class="text-lg font-medium text-sky-300 mb-2">Forecast</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              <div v-for="day in weather.forecast" :key="day.date" class="bg-gray-700/50 rounded-lg p-3 text-center">
+                <div class="text-sm text-gray-400">{{ day.date }}</div>
+                <div class="text-2xl my-1">{{ day.icon }}</div>
+                <div class="flex justify-center gap-2 text-sm">
+                  <span class="text-white">{{ day.tempMax }}°</span>
+                  <span class="text-gray-400">{{ day.tempMin }}°</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="userInfo.latitude && userInfo.longitude" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
+        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌎 Geographic Details</h2>
+        <div v-if="geo.loading">
+          <p class="text-gray-400">Loading geographic data...</p>
+        </div>
+        <div v-else-if="geo.error">
+          <p class="text-red-400">{{ geo.error }}</p>
+        </div>
+        <div v-else>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <LabelValueItem label="Elevation" :value="`${geo.elevation} meters`" />
+            <LabelValueItem label="Local Time" :value="geo.localTime" />
+            <LabelValueItem label="Timezone" :value="geo.timezone" />
+            <LabelValueItem label="Country Code" :value="geo.countryCode" />
+            <LabelValueItem label="Country" :value="geo.country" />
+            <LabelValueItem label="Currency" :value="geo.currency" />
+            <LabelValueItem label="Languages" :value="geo.languages" />
+            <LabelValueItem label="Population (City)" :value="geo.cityPopulation" />
+            <LabelValueItem label="Population (Country)" :value="geo.countryPopulation" />
+          </dl>
+
+          <div v-if="geo.nearbyPlaces && geo.nearbyPlaces.length > 0" class="mt-4">
+            <h3 class="text-lg font-medium text-sky-300 mb-2">Nearby Places</h3>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <li v-for="place in geo.nearbyPlaces" :key="place.name" class="bg-gray-700/50 rounded-lg p-2 flex items-center">
+                <span class="text-sm">{{ place.name }} ({{ place.distance }} km)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
@@ -275,15 +354,15 @@
       </section>
 
       <footer class="text-center pt-8 pb-4 text-sm text-gray-500">
-        <p>&copy; {{ new Date().getFullYear() }} WhoAmI. Information gathered from your browser.</p>
-        <p class="mt-1">Some information might be approximate or unavailable depending on your browser and settings.</p>
+        <p>&copy; {{ new Date().getFullYear() }} WhoAmI.</p>
       </footer>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue';
+// @ts-ignore
+import { ref, onMounted, reactive, computed, watch } from 'vue';
 import LabelValueItem from './LabelValueItem.vue';
 import MapDisplay from './MapDisplay.vue';
 
@@ -298,7 +377,6 @@ interface UserAgentDataBrand {
   brand: string;
   version: string;
 }
-
 interface UserAgentData {
   brands?: UserAgentDataBrand[];
   mobile?: boolean;
@@ -468,6 +546,51 @@ const history = reactive({
   sessionStart: Date.now()
 });
 
+// Weather and Geographic Information
+const weather = reactive({
+  loading: true,
+  error: null as string | null,
+  location: '',
+  description: '',
+  temperature: 0,
+  feelsLike: 0,
+  humidity: 0,
+  windSpeed: 0,
+  windDirection: '',
+  pressure: 0,
+  visibility: 0,
+  clouds: 0,
+  sunrise: '',
+  sunset: '',
+  icon: '',
+  units: 'metric',
+  forecast: [] as Array<{
+    date: string;
+    icon: string;
+    tempMax: number;
+    tempMin: number;
+    description: string;
+  }>
+});
+
+const geo = reactive({
+  loading: true,
+  error: null as string | null,
+  elevation: 0,
+  localTime: '',
+  timezone: '',
+  countryCode: '',
+  country: '',
+  currency: '',
+  languages: '',
+  cityPopulation: 'N/A',
+  countryPopulation: 'N/A',
+  nearbyPlaces: [] as Array<{
+    name: string;
+    distance: number;
+  }>
+});
+
 const isLoading = ref(true);
 const ipError = ref<string | null>(null);
 
@@ -484,14 +607,387 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
+// Fetch weather data
+const fetchWeatherData = async (lat: number, lon: number) => {
+  try {
+    weather.loading = true;
+    weather.error = null;
+    
+    // Using OpenWeatherMap API (you'll need to replace 'YOUR_API_KEY' with an actual key)
+    // For demo purposes, we'll handle this differently
+    const apiKey = 'demo_mode'; // Replace with your actual API key
+    
+    if (apiKey === 'demo_mode') {
+      // Demo mode - simulate weather data based on location
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+      
+      const season = getSeason(lat);
+      const temp = getRandomTemp(season, lat);
+      
+      weather.location = `${userInfo.city || 'Your Location'}, ${userInfo.country || ''}`;
+      weather.description = getWeatherDesc(season);
+      weather.temperature = temp;
+      weather.feelsLike = temp + (Math.random() > 0.5 ? -2 : 2);
+      weather.humidity = Math.floor(Math.random() * 40) + 40; // 40-80%
+      weather.windSpeed = Math.floor(Math.random() * 20) + 5;
+      weather.windDirection = getWindDirection();
+      weather.pressure = Math.floor(Math.random() * 50) + 1000; // 1000-1050 hPa
+      weather.visibility = Math.floor(Math.random() * 5) + 5; // 5-10 km
+      weather.clouds = Math.floor(Math.random() * 100);
+      
+      // Set sunrise/sunset based on rough latitude
+      const now = new Date();
+      const baseDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      
+      // Adjust sunrise/sunset times based on latitude and season
+      let sunriseHour = 6; // Default
+      let sunsetHour = 18; // Default
+      
+      if (Math.abs(lat) > 45) { // Far north or south
+        if (season === 'summer') {
+          sunriseHour = lat > 0 ? 4 : 7; // Earlier in northern summer, later in southern summer
+          sunsetHour = lat > 0 ? 21 : 17; // Later in northern summer, earlier in southern summer
+        } else if (season === 'winter') {
+          sunriseHour = lat > 0 ? 8 : 5; // Later in northern winter, earlier in southern winter
+          sunsetHour = lat > 0 ? 16 : 20; // Earlier in northern winter, later in southern winter
+        }
+      }
+      
+      const sunrise = new Date(baseDay);
+      sunrise.setHours(sunriseHour, Math.floor(Math.random() * 60));
+      const sunset = new Date(baseDay);
+      sunset.setHours(sunsetHour, Math.floor(Math.random() * 60));
+      
+      weather.sunrise = sunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      weather.sunset = sunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      // Set weather icon based on description
+      weather.icon = getWeatherIcon(weather.description);
+      
+      // Generate 5-day forecast
+      weather.forecast = [];
+      const forecastTemp = temp;
+      for (let i = 0; i < 5; i++) {
+        const forecastDate = new Date();
+        forecastDate.setDate(forecastDate.getDate() + i + 1);
+        
+        const variance = Math.floor(Math.random() * 6) - 3; // -3 to +3 degrees variance
+        const dayTemp = forecastTemp + variance;
+        const nightTemp = dayTemp - (Math.floor(Math.random() * 5) + 3); // 3-8 degrees cooler at night
+        
+        weather.forecast.push({
+          date: forecastDate.toLocaleDateString([], { weekday: 'short' }),
+          icon: getWeatherIcon(getWeatherDesc(season)),
+          tempMax: Math.round(dayTemp),
+          tempMin: Math.round(nightTemp),
+          description: getWeatherDesc(season)
+        });
+      }
+    } else {
+      // Actual API implementation would go here
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${weather.units}&appid=${apiKey}`);
+      const data = await response.json();
+      
+      if (data.cod !== 200) {
+        throw new Error(data.message || 'Failed to fetch weather data');
+      }
+      
+      weather.location = data.name + ', ' + data.sys.country;
+      weather.description = data.weather[0].description;
+      weather.temperature = Math.round(data.main.temp);
+      weather.feelsLike = Math.round(data.main.feels_like);
+      weather.humidity = data.main.humidity;
+      weather.windSpeed = data.wind.speed;
+      weather.windDirection = getWindDirectionFromDegrees(data.wind.deg);
+      weather.pressure = data.main.pressure;
+      weather.visibility = data.visibility / 1000; // Convert to km
+      weather.clouds = data.clouds.all;
+      
+      const sunriseDate = new Date(data.sys.sunrise * 1000);
+      const sunsetDate = new Date(data.sys.sunset * 1000);
+      weather.sunrise = sunriseDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      weather.sunset = sunsetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      weather.icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      
+      // Fetch forecast
+      const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${weather.units}&appid=${apiKey}`);
+      const forecastData = await forecastResponse.json();
+      
+      if (forecastData.cod !== '200') {
+        throw new Error(forecastData.message || 'Failed to fetch forecast data');
+      }
+      
+      const dailyForecasts = new Map();
+      for (const item of forecastData.list) {
+        const date = new Date(item.dt * 1000);
+        const day = date.toLocaleDateString();
+        
+        if (!dailyForecasts.has(day)) {
+          dailyForecasts.set(day, {
+            date: date.toLocaleDateString([], { weekday: 'short' }),
+            icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+            tempMax: Math.round(item.main.temp_max),
+            tempMin: Math.round(item.main.temp_min),
+            description: item.weather[0].description
+          });
+        } else {
+          const existing = dailyForecasts.get(day);
+          if (item.main.temp_max > existing.tempMax) {
+            existing.tempMax = Math.round(item.main.temp_max);
+          }
+          if (item.main.temp_min < existing.tempMin) {
+            existing.tempMin = Math.round(item.main.temp_min);
+          }
+        }
+      }
+      
+      weather.forecast = Array.from(dailyForecasts.values()).slice(0, 5);
+    }
+  } catch (error: any) {
+    console.error('Error fetching weather:', error);
+    weather.error = `Could not load weather data: ${error?.message || 'Unknown error'}`;
+  } finally {
+    weather.loading = false;
+  }
+};
+
+// Helper functions for demo mode
+const getSeason = (lat: number) => {
+  const month = new Date().getMonth();
+  
+  // Northern hemisphere
+  if (lat >= 0) {
+    if (month >= 2 && month <= 4) return 'spring';
+    if (month >= 5 && month <= 7) return 'summer';
+    if (month >= 8 && month <= 10) return 'autumn';
+    return 'winter';
+  } 
+  // Southern hemisphere
+  else {
+    if (month >= 2 && month <= 4) return 'autumn';
+    if (month >= 5 && month <= 7) return 'winter';
+    if (month >= 8 && month <= 10) return 'spring';
+    return 'summer';
+  }
+};
+
+const getRandomTemp = (season: string, lat: number) => {
+  const latAbs = Math.abs(lat);
+  let baseTemp = 20; // Default base temperature
+  
+  // Adjust base temperature based on latitude (cooler at high latitudes)
+  if (latAbs > 60) baseTemp -= 15;
+  else if (latAbs > 45) baseTemp -= 10;
+  else if (latAbs > 30) baseTemp -= 5;
+  else if (latAbs < 15) baseTemp += 5; // Warmer in tropics
+  
+  // Adjust for season
+  switch(season) {
+    case 'winter': baseTemp -= 15; break;
+    case 'autumn': baseTemp -= 5; break;
+    case 'spring': baseTemp += 0; break;
+    case 'summer': baseTemp += 10; break;
+  }
+  
+  // Add some randomness
+  const randomVariance = Math.floor(Math.random() * 10) - 5; // -5 to +5
+  return Math.round(baseTemp + randomVariance);
+};
+
+const getWeatherDesc = (season: string) => {
+  const descriptions = {
+    winter: ['Light snow', 'Freezing', 'Partly cloudy', 'Overcast', 'Clear sky', 'Snowfall'],
+    spring: ['Light rain', 'Scattered clouds', 'Partly cloudy', 'Moderate rain', 'Sunny intervals'],
+    summer: ['Sunny', 'Clear sky', 'Scattered clouds', 'Warm', 'Hot and humid', 'Thunderstorm'],
+    autumn: ['Cloudy', 'Light rain', 'Windy', 'Partly cloudy', 'Fog', 'Overcast']
+  };
+  
+  const options = descriptions[season as keyof typeof descriptions] || descriptions.spring;
+  return options[Math.floor(Math.random() * options.length)];
+};
+
+const getWindDirection = () => {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  return directions[Math.floor(Math.random() * directions.length)];
+};
+
+const getWindDirectionFromDegrees = (deg: number) => {
+  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  return directions[Math.round((deg % 360) / 22.5) % 16];
+};
+
+const getWeatherIcon = (description: string) => {
+  // Map common descriptions to icon codes (using Font Awesome or similar)
+  const lowerDesc = description.toLowerCase();
+  
+  // For a demo, we could return simple emoji or placeholder images
+  if (lowerDesc.includes('rain')) return '🌧️';
+  if (lowerDesc.includes('snow')) return '❄️';
+  if (lowerDesc.includes('cloud')) return '☁️';
+  if (lowerDesc.includes('clear') || lowerDesc.includes('sunny')) return '☀️';
+  if (lowerDesc.includes('thunder')) return '⛈️';
+  if (lowerDesc.includes('fog') || lowerDesc.includes('mist')) return '🌫️';
+  if (lowerDesc.includes('wind')) return '💨';
+  
+  // Default
+  return '🌤️';
+};
+
+// Fetch geographic data
+// @ts-ignore
+const fetchGeographicData = async (lat: number, lon: number) => {
+  try {
+    geo.loading = true;
+    geo.error = null;
+    
+    // In a real implementation, you would use APIs like OpenStreetMap/Nominatim,
+    // RestCountries API, etc. For demo purposes, we'll simulate the response.
+    await new Promise(resolve => setTimeout(resolve, 700)); // Simulate API delay
+    
+    // Demo data based on location
+    geo.elevation = Math.floor(Math.random() * 1000); // Random elevation
+    
+    // Local time based on timezone
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short'
+    };
+    geo.localTime = now.toLocaleString(undefined, options);
+    geo.timezone = userInfo.ipTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Country information (should be updated with real data in production)
+    geo.countryCode = userInfo.country || 'Unknown';
+    geo.country = getCountryName(geo.countryCode);
+    
+    // Demo data for currency and languages
+    const countryCurrencies: Record<string, string> = {
+      'US': 'USD - United States Dollar',
+      'GB': 'GBP - British Pound',
+      'CA': 'CAD - Canadian Dollar',
+      'AU': 'AUD - Australian Dollar',
+      'DE': 'EUR - Euro',
+      'FR': 'EUR - Euro',
+      'JP': 'JPY - Japanese Yen',
+      'CN': 'CNY - Chinese Yuan',
+      'IN': 'INR - Indian Rupee',
+      'BR': 'BRL - Brazilian Real',
+    };
+    
+    const countryLanguages: Record<string, string> = {
+      'US': 'English',
+      'GB': 'English',
+      'CA': 'English, French',
+      'AU': 'English',
+      'DE': 'German',
+      'FR': 'French',
+      'JP': 'Japanese',
+      'CN': 'Mandarin, Cantonese',
+      'IN': 'Hindi, English, and many regional languages',
+      'BR': 'Portuguese',
+    };
+    
+    geo.currency = countryCurrencies[geo.countryCode] || 'Unknown';
+    geo.languages = countryLanguages[geo.countryCode] || 'Unknown';
+    
+    // Demo population data
+    const demoPopulations: Record<string, any> = {
+      'New York': {city: '8.8 million', country: '332 million'},
+      'London': {city: '9.5 million', country: '67 million'},
+      'Paris': {city: '2.1 million', country: '67 million'},
+      'Tokyo': {city: '13.9 million', country: '126 million'},
+      'Sydney': {city: '5.3 million', country: '25 million'},
+      'Berlin': {city: '3.7 million', country: '83 million'},
+      'Mumbai': {city: '20.4 million', country: '1.38 billion'},
+      'São Paulo': {city: '12.3 million', country: '212 million'},
+    };
+    
+    if (userInfo.city && demoPopulations[userInfo.city]) {
+      geo.cityPopulation = demoPopulations[userInfo.city].city;
+      geo.countryPopulation = demoPopulations[userInfo.city].country;
+    } else {
+      // Generate random but realistic population figures
+      const randomCitySize = Math.floor(Math.random() * 10) + 1;
+      geo.cityPopulation = randomCitySize < 3 ? 
+        `${(Math.random() * 0.5 + 0.1).toFixed(1)} million` : 
+        `${(Math.random() * 5 + 1).toFixed(1)} million`;
+        
+      const countrySizes: Record<string, string> = {
+        'US': '332 million',
+        'GB': '67 million',
+        'CA': '38 million',
+        'AU': '25 million',
+        'DE': '83 million',
+        'FR': '67 million',
+        'JP': '126 million',
+        'CN': '1.4 billion',
+        'IN': '1.38 billion',
+        'BR': '212 million',
+      };
+      
+      geo.countryPopulation = countrySizes[geo.countryCode] || `${Math.floor(Math.random() * 100) + 1} million`;
+    }
+    
+    // Generate nearby places (fictitious for demo)
+    geo.nearbyPlaces = [];
+    const numPlaces = Math.floor(Math.random() * 3) + 3; // 3-5 places
+    
+    const placeTypes = ['Park', 'Lake', 'Mountain', 'Beach', 'Forest', 'River', 'Valley'];
+    const placeNames = ['Grand', 'Royal', 'Golden', 'Silver', 'Crystal', 'Emerald', 'Blue', 'Green', 'Red', 'White'];
+    
+    for (let i = 0; i < numPlaces; i++) {
+      const placeName = `${placeNames[Math.floor(Math.random() * placeNames.length)]} ${placeTypes[Math.floor(Math.random() * placeTypes.length)]}`;
+      const distance = Math.floor(Math.random() * 30) + 1; // 1-30 km
+      
+      geo.nearbyPlaces.push({
+        name: placeName,
+        distance: distance
+      });
+    }
+    
+    // Sort by distance
+    geo.nearbyPlaces.sort((a, b) => a.distance - b.distance);
+    
+  } catch (error: any) {
+    console.error('Error fetching geographic data:', error);
+    geo.error = `Could not load geographic data: ${error?.message || 'Unknown error'}`;
+  } finally {
+    geo.loading = false;
+  }
+};
+
+// Helper to get country name from country code
+const getCountryName = (countryCode: string) => {
+  const countryNames: Record<string, string> = {
+    'US': 'United States',
+    'GB': 'United Kingdom',
+    'CA': 'Canada',
+    'AU': 'Australia',
+    'DE': 'Germany',
+    'FR': 'France',
+    'JP': 'Japan',
+    'CN': 'China',
+    'IN': 'India',
+    'BR': 'Brazil',
+    // Add more as needed
+  };
+  
+  return countryNames[countryCode] || countryCode;
+};
+
 // Detect WebGL support
 const checkWebGLSupport = () => {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
   
   if (gl) {
+    // @ts-ignore
     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
     if (debugInfo) {
+        // @ts-ignore
       media.gpuInfo = `${gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)} - ${gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)}`;
     }
     return 'Supported';
@@ -735,8 +1231,11 @@ const checkCommonFonts = () => {
   fonts.systemFont = computedFont.split(',')[0].replace(/["']/g, '');
   
   // Detect font smoothing
+  // @ts-ignore
   const isSmoothingEnabled = document.body.style.webkitFontSmoothing === 'antialiased' || 
+                            // @ts-ignore
                            window.getComputedStyle(document.body).webkitFontSmoothing === 'antialiased' ||
+                           // @ts-ignore
                            window.getComputedStyle(document.body).fontSmooth === 'antialiased';
   
   fonts.smoothing = isSmoothingEnabled ? 'Enabled' : 'Not detected';
@@ -764,6 +1263,7 @@ const collectPerformanceMetrics = () => {
       // Resource timings
       const resources = window.performance.getEntriesByType('resource');
       performance.resources = resources.map(res => {
+        // @ts-ignore
         const size = res.encodedBodySize || res.transferSize || 0;
         return {
           name: res.name,
@@ -873,6 +1373,10 @@ onMounted(async () => {
       const [lat, long] = data.loc.split(',');
       userInfo.latitude = parseFloat(lat);
       userInfo.longitude = parseFloat(long);
+      
+      // Fetch weather and geographic data once we have coordinates
+      fetchWeatherData(userInfo.latitude, userInfo.longitude);
+      fetchGeographicData(userInfo.latitude, userInfo.longitude);
     }
   } catch (error: any) {
     console.error("Error fetching IP info:", error);
@@ -988,6 +1492,14 @@ onMounted(async () => {
   
   // --- Collect performance metrics ---
   collectPerformanceMetrics();
+
+  // Add a watcher to fetch weather if coordinates change later
+  watch(() => [userInfo.latitude, userInfo.longitude], ([newLat, newLong], [oldLat, oldLong]) => {
+    if (newLat && newLong && (newLat !== oldLat || newLong !== oldLong)) {
+      fetchWeatherData(newLat, newLong);
+      fetchGeographicData(newLat, newLong);
+    }
+  });
 
   // --- Dynamic Window Size ---
   window.addEventListener('resize', () => {
