@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-900 text-gray-200 p-4 sm:p-6 lg:p-8">
     <header class="mb-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-bold text-sky-400">WhoAmI?</h1>
-      <p class="mt-2 text-lg text-gray-400">Your Digital Footprint - Revealed by Your Browser</p>
+      <p class="mt-2 text-lg text-gray-400"></p>
     </header>
 
     <div v-if="isLoading" class="text-center py-10">
@@ -17,14 +17,14 @@
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">📍 IP & Location</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="IP Address" :value="userInfo.ipAddress" />
-          <UserInfoItem label="City" :value="userInfo.city" />
-          <UserInfoItem label="Region" :value="userInfo.region" />
-          <UserInfoItem label="Country" :value="userInfo.country" />
-          <UserInfoItem label="Latitude" :value="userInfo.latitude" />
-          <UserInfoItem label="Longitude" :value="userInfo.longitude" />
-          <UserInfoItem label="ISP / Organization" :value="userInfo.isp" />
-          <UserInfoItem label="Timezone (from IP)" :value="userInfo.ipTimezone" />
+          <LabelValueItem label="IP Address" :value="userInfo.ipAddress" />
+          <LabelValueItem label="City" :value="userInfo.city" />
+          <LabelValueItem label="Region" :value="userInfo.region" />
+          <LabelValueItem label="Country" :value="userInfo.country" />
+          <LabelValueItem label="Latitude" :value="userInfo.latitude" />
+          <LabelValueItem label="Longitude" :value="userInfo.longitude" />
+          <LabelValueItem label="ISP / Organization" :value="userInfo.isp" />
+          <LabelValueItem label="Timezone (from IP)" :value="userInfo.ipTimezone" />
         </dl>
         <p v-if="ipError" class="mt-4 text-sm text-red-400">{{ ipError }}</p>
       </section>
@@ -32,78 +32,78 @@
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">💻 Browser & OS</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="User Agent String" :value="userInfo.userAgent" />
-          <UserInfoItem label="Browser (from UAData)" :value="userInfo.browserNameVersion" />
-          <UserInfoItem label="OS (from UAData)" :value="userInfo.osNameVersion" />
-          <UserInfoItem label="Mobile (from UAData)" :value="userInfo.isMobile" />
-          <UserInfoItem label="Platform (navigator.platform)" :value="userInfo.platform" />
-          <UserInfoItem label="Vendor (navigator.vendor)" :value="userInfo.vendor" />
-          <UserInfoItem label="Language (navigator.language)" :value="userInfo.language" />
-          <UserInfoItem label="Languages (navigator.languages)" :value="userInfo.languages" />
+          <LabelValueItem label="User Agent String" :value="userInfo.userAgent" />
+          <LabelValueItem label="Browser (from UAData)" :value="userInfo.browserNameVersion" />
+          <LabelValueItem label="OS (from UAData)" :value="userInfo.osNameVersion" />
+          <LabelValueItem label="Mobile (from UAData)" :value="userInfo.isMobile" />
+          <LabelValueItem label="Platform (navigator.platform)" :value="userInfo.platform" />
+          <LabelValueItem label="Vendor (navigator.vendor)" :value="userInfo.vendor" />
+          <LabelValueItem label="Language (navigator.language)" :value="userInfo.language" />
+          <LabelValueItem label="Languages (navigator.languages)" :value="userInfo.languages" />
         </dl>
       </section>
 
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🖥️ Display & Screen</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="Screen Resolution" :value="`${userInfo.screenWidth} x ${userInfo.screenHeight}`" />
-          <UserInfoItem label="Available Screen Size" :value="`${userInfo.availScreenWidth} x ${userInfo.availScreenHeight}`" />
-          <UserInfoItem label="Window Size" :value="`${userInfo.windowInnerWidth} x ${userInfo.windowInnerHeight}`" />
-          <UserInfoItem label="Color Depth" :value="userInfo.colorDepth" />
-          <UserInfoItem label="Pixel Depth" :value="userInfo.pixelDepth" />
-          <UserInfoItem label="Device Pixel Ratio" :value="userInfo.devicePixelRatio" />
-          <UserInfoItem label="Screen Orientation" :value="userInfo.screenOrientation" />
+          <LabelValueItem label="Screen Resolution" :value="`${userInfo.screenWidth} x ${userInfo.screenHeight}`" />
+          <LabelValueItem label="Available Screen Size" :value="`${userInfo.availScreenWidth} x ${userInfo.availScreenHeight}`" />
+          <LabelValueItem label="Window Size" :value="`${userInfo.windowInnerWidth} x ${userInfo.windowInnerHeight}`" />
+          <LabelValueItem label="Color Depth" :value="userInfo.colorDepth" />
+          <LabelValueItem label="Pixel Depth" :value="userInfo.pixelDepth" />
+          <LabelValueItem label="Device Pixel Ratio" :value="userInfo.devicePixelRatio" />
+          <LabelValueItem label="Screen Orientation" :value="userInfo.screenOrientation" />
         </dl>
       </section>
 
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">⚙️ Hardware & Performance</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="CPU Cores (Threads)" :value="userInfo.cpuCores" />
-          <UserInfoItem label="Device Memory (Approx. GB)" :value="userInfo.deviceMemory" />
-          <UserInfoItem label="Max Touch Points" :value="userInfo.maxTouchPoints" />
+          <LabelValueItem label="CPU Cores (Threads)" :value="userInfo.cpuCores" />
+          <LabelValueItem label="Device Memory (Approx. GB)" :value="userInfo.deviceMemory" />
+          <LabelValueItem label="Max Touch Points" :value="userInfo.maxTouchPoints" />
         </dl>
       </section>
       
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌐 Network Status</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="Online Status" :value="userInfo.isOnline" />
-          <UserInfoItem label="Connection Type" :value="userInfo.connectionType" />
-          <UserInfoItem label="Effective Connection Type" :value="userInfo.effectiveConnectionType" />
-          <UserInfoItem label="Downlink (Mbps)" :value="userInfo.downlink" />
-          <UserInfoItem label="RTT (ms)" :value="userInfo.rtt" />
-          <UserInfoItem label="Save Data Mode" :value="userInfo.saveData" />
+          <LabelValueItem label="Online Status" :value="userInfo.isOnline" />
+          <LabelValueItem label="Connection Type" :value="userInfo.connectionType" />
+          <LabelValueItem label="Effective Connection Type" :value="userInfo.effectiveConnectionType" />
+          <LabelValueItem label="Downlink (Mbps)" :value="userInfo.downlink" />
+          <LabelValueItem label="RTT (ms)" :value="userInfo.rtt" />
+          <LabelValueItem label="Save Data Mode" :value="userInfo.saveData" />
         </dl>
       </section>
 
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔧 Browser Features</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="Cookies Enabled" :value="userInfo.cookiesEnabled" />
-          <UserInfoItem label="Do Not Track" :value="userInfo.doNotTrack" />
-          <UserInfoItem label="PDF Viewer Enabled" :value="userInfo.pdfViewerEnabled" />
-          <UserInfoItem label="Webdriver Active" :value="userInfo.webdriver" />
-          <UserInfoItem label="Java Enabled (Legacy)" :value="userInfo.javaEnabled" />
+          <LabelValueItem label="Cookies Enabled" :value="userInfo.cookiesEnabled" />
+          <LabelValueItem label="Do Not Track" :value="userInfo.doNotTrack" />
+          <LabelValueItem label="PDF Viewer Enabled" :value="userInfo.pdfViewerEnabled" />
+          <LabelValueItem label="Webdriver Active" :value="userInfo.webdriver" />
+          <LabelValueItem label="Java Enabled (Legacy)" :value="userInfo.javaEnabled" />
         </dl>
       </section>
 
       <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">⏱️ Date & Time</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="Local Date & Time" :value="userInfo.localDateTime" />
-          <UserInfoItem label="UTC Date & Time" :value="userInfo.utcDateTime" />
-          <UserInfoItem label="Timezone Offset (minutes from UTC)" :value="userInfo.timezoneOffset" />
+          <LabelValueItem label="Local Date & Time" :value="userInfo.localDateTime" />
+          <LabelValueItem label="UTC Date & Time" :value="userInfo.utcDateTime" />
+          <LabelValueItem label="Timezone Offset (minutes from UTC)" :value="userInfo.timezoneOffset" />
         </dl>
       </section>
 
       <section v-if="userInfo.battery !== null" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
         <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔋 Battery Status</h2>
         <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <UserInfoItem label="Battery Level" :value="userInfo.battery?.level !== undefined ? `${(userInfo.battery.level * 100).toFixed(0)}%` : 'N/A'" />
-          <UserInfoItem label="Charging" :value="userInfo.battery?.charging" />
-          <UserInfoItem label="Charging Time" :value="userInfo.battery?.chargingTime === Infinity ? 'Infinity' : userInfo.battery?.chargingTime" />
-          <UserInfoItem label="Discharging Time" :value="userInfo.battery?.dischargingTime === Infinity ? 'Infinity' : userInfo.battery?.dischargingTime" />
+          <LabelValueItem label="Battery Level" :value="userInfo.battery?.level !== undefined ? `${(userInfo.battery.level * 100).toFixed(0)}%` : 'N/A'" />
+          <LabelValueItem label="Charging" :value="userInfo.battery?.charging" />
+          <LabelValueItem label="Charging Time" :value="userInfo.battery?.chargingTime === Infinity ? 'Infinity' : userInfo.battery?.chargingTime" />
+          <LabelValueItem label="Discharging Time" :value="userInfo.battery?.dischargingTime === Infinity ? 'Infinity' : userInfo.battery?.dischargingTime" />
         </dl>
       </section>
 
@@ -114,21 +114,21 @@
           Below are examples of common headers your browser <span class="italic">might</span> send with requests.
         </p>
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <UserInfoItem label="Accept" value="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" />
-            <UserInfoItem label="Accept-Language" :value="userInfo.language || 'en-US,en;q=0.5'" />
-            <UserInfoItem label="Accept-Encoding" value="gzip, deflate, br" />
-            <UserInfoItem label="User-Agent" :value="userInfo.userAgent" />
-            <UserInfoItem label="Connection" value="keep-alive" />
-            <UserInfoItem label="Upgrade-Insecure-Requests" value="1 (typically for initial HTTP request)" />
-            <UserInfoItem label="Sec-Fetch-Dest" value="document" />
-            <UserInfoItem label="Sec-Fetch-Mode" value="navigate" />
-            <UserInfoItem label="Sec-Fetch-Site" value="none / same-origin / cross-site" />
-            <UserInfoItem label="Sec-Fetch-User" value="?1 (indicates user activation)" />
+            <LabelValueItem label="Accept" value="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" />
+            <LabelValueItem label="Accept-Language" :value="userInfo.language || 'en-US,en;q=0.5'" />
+            <LabelValueItem label="Accept-Encoding" value="gzip, deflate, br" />
+            <LabelValueItem label="User-Agent" :value="userInfo.userAgent" />
+            <LabelValueItem label="Connection" value="keep-alive" />
+            <LabelValueItem label="Upgrade-Insecure-Requests" value="1 (typically for initial HTTP request)" />
+            <LabelValueItem label="Sec-Fetch-Dest" value="document" />
+            <LabelValueItem label="Sec-Fetch-Mode" value="navigate" />
+            <LabelValueItem label="Sec-Fetch-Site" value="none / same-origin / cross-site" />
+            <LabelValueItem label="Sec-Fetch-User" value="?1 (indicates user activation)" />
         </dl>
       </section>
 
       <footer class="text-center pt-8 pb-4 text-sm text-gray-500">
-        <p>&copy; {{ new Date().getFullYear() }} WhoAmI App. Information gathered from your browser.</p>
+        <p>&copy; {{ new Date().getFullYear() }} WhoAmI. Information gathered from your browser.</p>
         <p class="mt-1">Some information might be approximate or unavailable depending on your browser and settings.</p>
       </footer>
     </div>
@@ -137,7 +137,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-import UserInfoItem from './components/UserInfoItem.vue';
+import LabelValueItem from './LabelValueItem.vue';
 
 // Define interfaces for structured data
 interface IpInfo {
