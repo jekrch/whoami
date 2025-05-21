@@ -1,22 +1,34 @@
+
+
 <template>
-  <div class="min-h-screen bg-gray-900 text-gray-200 p-4 sm:p-6 lg:p-8">
-    <header class="mb-8 text-center">
-      <h1 class="text-4xl sm:text-5xl font-bold text-sky-200">WhoAmI</h1>
-      <p class="mt-2 text-lg text-gray-400">A Comprehensive User Context Dashboard</p>
+  <div class="min-h-screen bg-gradient-to-br from-gray-950 via-emerald-900 to-gray-800 text-gray-200 p-4 sm:p-6 lg:p-8 font-sans">
+    <header class="mb-12 text-center">
+      <h1 class="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-indigo-900 via-emerald-300 to-pink-950 text-transparent bg-clip-text tracking-tight">WhoAmI</h1>
+      <p class="mt-3 text-lg text-gray-400 max-w-xl mx-auto">A comprehensive digital fingerprint dashboard</p>
     </header>
 
-    <div v-if="isLoading" class="text-center py-10">
-      <svg class="animate-spin h-10 w-10 text-sky-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <p class="mt-4 text-xl text-gray-400">Gathering your info...</p>
+    <div v-if="isLoading" class="flex flex-col items-center justify-center py-20">
+      <div class="relative w-20 h-20">
+        <div class="absolute top-0 left-0 w-full h-full border-4 border-indigo-500/30 rounded-full"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-4 border-t-indigo-500 rounded-full animate-spin"></div>
+      </div>
+      <p class="mt-6 text-xl text-gray-300 font-light">Gathering your digital shadow...</p>
     </div>
 
     <div v-else class="space-y-8">
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">📍 IP & Location</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-indigo-900/10 hover:shadow-2xl overflow-hidden relative">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl"></div>
+        <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+          <span class="inline-block p-2 bg-indigo-500/10 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </span>
+          IP & Location
+        </h2>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <LabelValueItem label="IP Address" :value="userInfo.ipAddress" />
           <LabelValueItem label="City" :value="userInfo.city" />
           <LabelValueItem label="Region" :value="userInfo.region" />
@@ -26,335 +38,381 @@
           <LabelValueItem label="ISP / Organization" :value="userInfo.isp" />
           <LabelValueItem label="Timezone (from IP)" :value="userInfo.ipTimezone" />
         </dl>
-        <div v-if="userInfo.latitude && userInfo.longitude" class="mt-6 rounded-lg overflow-hidden shadow-lg">
+        <div v-if="userInfo.latitude && userInfo.longitude" class="mt-6 rounded-xl overflow-hidden shadow-lg border border-gray-800/50">
           <MapDisplay :latitude="userInfo.latitude" :longitude="userInfo.longitude" :zoom-level="15" />
         </div>
         <p v-if="ipError" class="mt-4 text-sm text-red-400">{{ ipError }}</p>
       </section>
 
-      <section v-if="userInfo.latitude && userInfo.longitude" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌤️ Weather & Climate</h2>
-        <div v-if="weather.loading">
-          <p class="text-gray-400">Loading weather data...</p>
-        </div>
-        <div v-else-if="weather.error">
-          <p class="text-red-400">{{ weather.error }}</p>
-        </div>
-        <div v-else>
-          <div class="flex flex-col sm:flex-row items-center mb-4">
-            <div class="text-center sm:text-left sm:mr-6">
-              <h3 class="text-xl font-medium text-white">{{ weather.location }}</h3>
-              <p class="text-sm text-gray-400">{{ weather.description }}</p>
-            </div>
-            <div class="flex items-center mt-3 sm:mt-0">
-              <span class="text-4xl font-bold text-white">{{ weather.temperature }}°{{ weather.units === 'metric' ? 'C' : 'F' }}</span>
-              <span v-if="weather.icon" class="text-4xl ml-2">{{ weather.icon }}</span>
-            </div>
-          </div>
 
-          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <LabelValueItem label="Feels Like" :value="`${weather.feelsLike}°${weather.units === 'metric' ? 'C' : 'F'}`" />
-            <LabelValueItem label="Humidity" :value="`${weather.humidity}%`" />
-            <LabelValueItem label="Wind" :value="`${weather.windSpeed} ${weather.units === 'metric' ? 'km/h' : 'mph'} ${weather.windDirection}`" />
-            <LabelValueItem label="Pressure" :value="`${weather.pressure} hPa`" />
-            <LabelValueItem label="Visibility" :value="`${weather.visibility} km`" />
-            <LabelValueItem label="Clouds" :value="`${weather.clouds}%`" />
-            <LabelValueItem label="Sunrise" :value="weather.sunrise" />
-            <LabelValueItem label="Sunset" :value="weather.sunset" />
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-emerald-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-emerald-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </span>
+            Browser & OS
+          </h2>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Browser</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.browserNameVersion }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">OS</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.osNameVersion }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Platform</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.platform }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Language</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.language }}</dd>
+            </div>
           </dl>
+          <div class="mt-4 bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">User Agent</dt>
+            <dd class="text-sm font-medium text-gray-300 break-all">{{ userInfo.userAgent }}</dd>
+          </div>
+        </section>
 
-          <div class="mt-4">
-            <h3 class="text-lg font-medium text-sky-300 mb-2">Forecast</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              <div v-for="day in weather.forecast" :key="day.date" class="bg-gray-700/50 rounded-lg p-3 text-center">
-                <div class="text-sm text-gray-400">{{ day.date }}</div>
-                <div class="text-2xl my-1">{{ day.icon }}</div>
-                <div class="flex justify-center gap-2 text-sm">
-                  <span class="text-white">{{ day.tempMax }}°</span>
-                  <span class="text-gray-400">{{ day.tempMin }}°</span>
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-pink-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-pink-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-pink-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </span>
+            Display & Screen
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30 col-span-2">
+              <div class="flex flex-col md:flex-row justify-between">
+                <div>
+                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Screen Resolution</dt>
+                  <dd class="text-xl font-medium text-white">{{ userInfo.screenWidth }} × {{ userInfo.screenHeight }}</dd>
+                </div>
+                <div class="mt-4 md:mt-0">
+                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Window Size</dt>
+                  <dd class="text-xl font-medium text-white">{{ userInfo.windowInnerWidth }} × {{ userInfo.windowInnerHeight }}</dd>
+                </div>
+                <div class="mt-4 md:mt-0">
+                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Device Pixel Ratio</dt>
+                  <dd class="text-xl font-medium text-white">{{ userInfo.devicePixelRatio }}×</dd>
                 </div>
               </div>
             </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Color Depth</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.colorDepth }} bit</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Orientation</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.screenOrientation }}</dd>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section v-if="userInfo.latitude && userInfo.longitude" class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌎 Geographic Details</h2>
-        <div v-if="geo.loading">
-          <p class="text-gray-400">Loading geographic data...</p>
-        </div>
-        <div v-else-if="geo.error">
-          <p class="text-red-400">{{ geo.error }}</p>
-        </div>
-        <div v-else>
-          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <LabelValueItem label="Elevation" :value="`${geo.elevation} meters`" />
-            <LabelValueItem label="Local Time" :value="geo.localTime" />
-            <LabelValueItem label="Timezone" :value="geo.timezone" />
-            <LabelValueItem label="Country Code" :value="geo.countryCode" />
-            <LabelValueItem label="Country" :value="geo.country" />
-            <LabelValueItem label="Currency" :value="geo.currency" />
-            <LabelValueItem label="Languages" :value="geo.languages" />
-            <LabelValueItem label="Population (City)" :value="geo.cityPopulation" />
-            <LabelValueItem label="Population (Country)" :value="geo.countryPopulation" />
-          </dl>
-
-          <div v-if="geo.nearbyPlaces && geo.nearbyPlaces.length > 0" class="mt-4">
-            <h3 class="text-lg font-medium text-sky-300 mb-2">Nearby Places</h3>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <li v-for="place in geo.nearbyPlaces" :key="place.name" class="bg-gray-700/50 rounded-lg p-2 flex items-center">
-                <span class="text-sm">{{ place.name }} ({{ place.distance }} km)</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">💻 Browser & OS</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="User Agent String" :value="userInfo.userAgent" />
-          <LabelValueItem label="Browser (from UAData)" :value="userInfo.browserNameVersion" />
-          <LabelValueItem label="OS (from UAData)" :value="userInfo.osNameVersion" />
-          <LabelValueItem label="Mobile (from UAData)" :value="userInfo.isMobile" />
-          <LabelValueItem label="Platform (navigator.platform)" :value="userInfo.platform" />
-          <LabelValueItem label="Vendor (navigator.vendor)" :value="userInfo.vendor" />
-          <LabelValueItem label="Language (navigator.language)" :value="userInfo.language" />
-          <LabelValueItem label="Languages (navigator.languages)" :value="userInfo.languages" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🖥️ Display & Screen</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Screen Resolution" :value="`${userInfo.screenWidth} x ${userInfo.screenHeight}`" />
-          <LabelValueItem label="Available Screen Size" :value="`${userInfo.availScreenWidth} x ${userInfo.availScreenHeight}`" />
-          <LabelValueItem label="Window Size" :value="`${userInfo.windowInnerWidth} x ${userInfo.windowInnerHeight}`" />
-          <LabelValueItem label="Color Depth" :value="userInfo.colorDepth" />
-          <LabelValueItem label="Pixel Depth" :value="userInfo.pixelDepth" />
-          <LabelValueItem label="Device Pixel Ratio" :value="userInfo.devicePixelRatio" />
-          <LabelValueItem label="Screen Orientation" :value="userInfo.screenOrientation" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">⚙️ Hardware & Performance</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="CPU Cores (Threads)" :value="userInfo.cpuCores" />
-          <LabelValueItem label="Device Memory (Approx. GB)" :value="userInfo.deviceMemory" />
-          <LabelValueItem label="Max Touch Points" :value="userInfo.maxTouchPoints" />
-        </dl>
-      </section>
-      
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🌐 Network Status</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Online Status" :value="userInfo.isOnline" />
-          <LabelValueItem label="Connection Type" :value="userInfo.connectionType" />
-          <LabelValueItem label="Effective Connection Type" :value="userInfo.effectiveConnectionType" />
-          <LabelValueItem label="Downlink (Mbps)" :value="userInfo.downlink" />
-          <LabelValueItem label="RTT (ms)" :value="userInfo.rtt" />
-          <LabelValueItem label="Save Data Mode" :value="userInfo.saveData" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔧 Browser Features</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Cookies Enabled" :value="userInfo.cookiesEnabled" />
-          <LabelValueItem label="Do Not Track" :value="userInfo.doNotTrack" />
-          <LabelValueItem label="PDF Viewer Enabled" :value="userInfo.pdfViewerEnabled" />
-          <LabelValueItem label="Webdriver Active" :value="userInfo.webdriver" />
-          <LabelValueItem label="Java Enabled (Legacy)" :value="userInfo.javaEnabled" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">⏱️ Date & Time</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Local Date & Time" :value="userInfo.localDateTime" />
-          <LabelValueItem label="UTC Date & Time" :value="userInfo.utcDateTime" />
-          <LabelValueItem label="Timezone Offset (minutes from UTC)" :value="userInfo.timezoneOffset" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔋 Battery Status</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <template v-if="userInfo.battery">
-            <template v-if="'level' in userInfo.battery">
-              <LabelValueItem label="Battery Level" :value="`${(userInfo.battery.level * 100).toFixed(0)}%`" />
-              <LabelValueItem label="Charging" :value="userInfo.battery.charging ? 'Yes' : 'No'" />
-              <LabelValueItem label="Charging Time" :value="userInfo.battery.chargingTime === Infinity ? 'Infinity' : userInfo.battery.chargingTime.toString()" />
-              <LabelValueItem label="Discharging Time" :value="userInfo.battery.dischargingTime === Infinity ? 'Infinity' : userInfo.battery.dischargingTime.toString()" />
-            </template>
-            <template v-else-if="'error' in userInfo.battery">
-              <LabelValueItem label="Battery Status" :value="userInfo.battery.error" />
-            </template>
-            <template v-else>
-              <LabelValueItem label="Battery Status" :value="'N/A'" />
-            </template>
-          </template>
-          <template v-else>
-            <LabelValueItem label="Battery Status" :value="'N/A'" />
-          </template>
-        </dl>
-      </section>
-
-      <!-- NEW SECTIONS -->
-      
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔐 API Support & Permissions</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="Geolocation" :value="permissions.geolocation" />
-          <LabelValueItem label="Notifications" :value="permissions.notifications" />
-          <LabelValueItem label="Camera" :value="permissions.camera" />
-          <LabelValueItem label="Microphone" :value="permissions.microphone" />
-          <LabelValueItem label="Push API" :value="apiSupport.pushApi ? 'Supported' : 'Not Supported'" />
-          <LabelValueItem label="Web Bluetooth" :value="apiSupport.bluetooth ? 'Supported' : 'Not Supported'" />
-          <LabelValueItem label="Web Share" :value="apiSupport.webShare ? 'Supported' : 'Not Supported'" />
-          <LabelValueItem label="Web USB" :value="apiSupport.webUsb ? 'Supported' : 'Not Supported'" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">📱 Device Sensors</h2>
-        <div v-if="sensors.available">
-          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <LabelValueItem label="Accelerometer" :value="sensors.accelerometer ? 'Available' : 'Unavailable'" />
-            <LabelValueItem label="Gyroscope" :value="sensors.gyroscope ? 'Available' : 'Unavailable'" />
-            <LabelValueItem label="Magnetometer" :value="sensors.magnetometer ? 'Available' : 'Unavailable'" />
-            <LabelValueItem label="Ambient Light" :value="sensors.ambientLight ? 'Available' : 'Unavailable'" />
-            <LabelValueItem label="Device Orientation" :value="sensors.deviceOrientation ? 'Available' : 'Unavailable'" />
-          </dl>
-          <div v-if="sensors.liveData" class="p-4 bg-gray-700/50 rounded-lg">
-            <h3 class="text-lg font-medium text-sky-300 mb-2">Live Sensor Data</h3>
-            <pre class="text-xs text-gray-300 overflow-x-auto">{{ sensors.liveData }}</pre>
-          </div>
-        </div>
-        <p v-else class="text-gray-400">Sensor APIs not available in this browser</p>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">💾 Storage</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <LabelValueItem label="LocalStorage Available" :value="storage.localStorage" />
-          <LabelValueItem label="SessionStorage Available" :value="storage.sessionStorage" />
-          <LabelValueItem label="IndexedDB Available" :value="storage.indexedDB ? 'Yes' : 'No'" />
-          <LabelValueItem label="Cache API Available" :value="storage.cacheAPI ? 'Yes' : 'No'" />
-          <LabelValueItem label="Estimated Storage Usage" :value="storage.usage" />
-          <LabelValueItem label="Estimated Storage Quota" :value="storage.quota" />
-          <LabelValueItem label="Persistent Storage Granted" :value="storage.persistentStorage" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🎮 Media Capabilities</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="WebGL" :value="media.webgl" />
-          <LabelValueItem label="WebGL2" :value="media.webgl2" />
-          <LabelValueItem label="Canvas Supported" :value="media.canvas ? 'Yes' : 'No'" />
-          <LabelValueItem label="Audio Supported" :value="media.audio ? 'Yes' : 'No'" />
-          <LabelValueItem label="Video Formats" :value="media.videoFormats" />
-          <LabelValueItem label="Audio Formats" :value="media.audioFormats" />
-          <LabelValueItem label="WebRTC Support" :value="media.webrtc ? 'Supported' : 'Not Supported'" />
-        </dl>
-        <div v-if="media.gpuInfo" class="mt-4 p-3 bg-gray-700/50 rounded-lg">
-          <h3 class="text-md font-medium text-sky-300 mb-1">GPU Information</h3>
-          <p class="text-sm text-gray-300">{{ media.gpuInfo }}</p>
-        </div>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">⚡ Performance Metrics</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <LabelValueItem label="Page Load Time" :value="performance.pageLoadTime + 'ms'" />
-          <LabelValueItem label="DOM Content Loaded" :value="performance.domContentLoaded + 'ms'" />
-          <LabelValueItem label="First Paint" :value="performance.firstPaint + 'ms'" />
-          <LabelValueItem label="First Contentful Paint" :value="performance.firstContentfulPaint + 'ms'" />
-        </dl>
-        <div class="mt-4">
-          <h3 class="text-lg font-medium text-sky-300 mb-2">Resource Timing</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-300">
-              <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                <tr>
-                  <th class="px-4 py-2">Resource</th>
-                  <th class="px-4 py-2">Duration</th>
-                  <th class="px-4 py-2">Size</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(resource, index) in performance.resources.slice(0, 5)" :key="index" class="border-b border-gray-700">
-                  <td class="px-4 py-2 truncate max-w-xs">{{ resource.name }}</td>
-                  <td class="px-4 py-2">{{ resource.duration }}ms</td>
-                  <td class="px-4 py-2">{{ resource.size }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🛡️ Security Features</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <LabelValueItem label="HTTPS Connection" :value="security.isHttps ? 'Yes' : 'No'" />
-          <LabelValueItem label="Content Security Policy" :value="security.csp ? 'Enabled' : 'Not Detected'" />
-          <LabelValueItem label="Cross-Origin Opener Policy" :value="security.coop" />
-          <LabelValueItem label="Referrer Policy" :value="security.referrerPolicy" />
-          <LabelValueItem label="Third-Party Cookies" :value="security.thirdPartyCookies ? 'Allowed' : 'Blocked'" />
-          <LabelValueItem label="Incognito Mode" :value="security.incognito ? 'Likely Yes' : 'Likely No'" />
-          <LabelValueItem label="Ad Blocker Detected" :value="security.adBlocker ? 'Yes' : 'No'" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🔤 Typography</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <LabelValueItem label="System Font" :value="fonts.systemFont" />
-          <LabelValueItem label="Default Font Size" :value="fonts.defaultSize + 'px'" />
-          <LabelValueItem label="Font Smoothing" :value="fonts.smoothing" />
-        </dl>
-        <div class="mt-4">
-          <h3 class="text-lg font-medium text-sky-300 mb-2">Common Font Availability</h3>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="(available, fontName) in fonts.available" :key="fontName" 
-                  class="px-2 py-1 rounded text-xs" 
-                  :class="available ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'">
-              {{ fontName }}
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-amber-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-amber-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
             </span>
+            Hardware & Performance
+          </h2>
+          <dl class="space-y-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">CPU Cores</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.cpuCores }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Device Memory</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.deviceMemory }} GB</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Max Touch Points</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.maxTouchPoints }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-cyan-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-cyan-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+              </svg>
+            </span>
+            Network Status
+          </h2>
+          <dl class="space-y-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Connection Type</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.connectionType }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Effective Type</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.effectiveConnectionType }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Downlink</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.downlink }} Mbps</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Online Status</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" :class="userInfo.isOnline ? 'bg-green-500' : 'bg-red-500'"></span>
+                <span class="text-xl font-medium text-white">{{ userInfo.isOnline ? 'Online' : 'Offline' }}</span>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-rose-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-rose-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            Date & Time
+          </h2>
+          <dl class="space-y-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Local Date & Time</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.localDateTime }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">UTC Date & Time</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.utcDateTime }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Timezone Offset</dt>
+              <dd class="text-xl font-medium text-white">{{ userInfo.timezoneOffset }} minutes from UTC</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Session Duration</dt>
+              <dd class="text-xl font-medium text-white">{{ history.sessionDuration }}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-blue-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-blue-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
+            </span>
+            API Support & Permissions
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Geolocation</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="permissions.geolocation === 'granted' ? 'bg-green-500' : 
+                              permissions.geolocation === 'denied' ? 'bg-red-500' : 'bg-yellow-500'"></span>
+                <span class="text-lg font-medium text-white capitalize">{{ permissions.geolocation }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Notifications</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="permissions.notifications === 'granted' ? 'bg-green-500' : 
+                              permissions.notifications === 'denied' ? 'bg-red-500' : 'bg-yellow-500'"></span>
+                <span class="text-lg font-medium text-white capitalize">{{ permissions.notifications }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Camera</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="permissions.camera === 'granted' ? 'bg-green-500' : 
+                              permissions.camera === 'denied' ? 'bg-red-500' : 'bg-yellow-500'"></span>
+                <span class="text-lg font-medium text-white capitalize">{{ permissions.camera }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Microphone</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="permissions.microphone === 'granted' ? 'bg-green-500' : 
+                              permissions.microphone === 'denied' ? 'bg-red-500' : 'bg-yellow-500'"></span>
+                <span class="text-lg font-medium text-white capitalize">{{ permissions.microphone }}</span>
+              </dd>
+            </div>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-lg font-medium text-white mb-3">API Support</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div v-for="(supported, api) in apiSupport" :key="api" 
+                   class="flex items-center px-3 py-2 rounded-lg" 
+                   :class="supported ? 'bg-blue-500/10 text-blue-300' : 'bg-gray-800/30 text-gray-400'">
+                <span class="text-xs capitalize">{{ api.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) }}</span>
+                <span class="ml-auto">
+                  <svg v-if="supported" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-green-900/10 hover:shadow-2xl overflow-hidden relative">
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-green-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-green-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </span>
+            Security Features
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">HTTPS Connection</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="security.isHttps ? 'bg-green-500' : 'bg-red-500'"></span>
+                <span class="text-lg font-medium text-white">{{ security.isHttps ? 'Secure' : 'Not Secure' }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Content Security Policy</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="security.csp ? 'bg-green-500' : 'bg-yellow-500'"></span>
+                <span class="text-lg font-medium text-white">{{ security.csp ? 'Enabled' : 'Not Detected' }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Referrer Policy</dt>
+              <dd class="text-lg font-medium text-white">{{ security.referrerPolicy || 'None' }}</dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Ad Blocker</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="security.adBlocker ? 'bg-green-500' : 'bg-gray-500'"></span>
+                <span class="text-lg font-medium text-white">{{ security.adBlocker ? 'Detected' : 'Not Detected' }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Incognito Mode</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="security.incognito ? 'bg-purple-500' : 'bg-gray-500'"></span>
+                <span class="text-lg font-medium text-white">{{ security.incognito ? 'Likely Yes' : 'Likely No' }}</span>
+              </dd>
+            </div>
+            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Cookies Enabled</dt>
+              <dd class="flex items-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                      :class="userInfo.cookiesEnabled ? 'bg-blue-500' : 'bg-red-500'"></span>
+                <span class="text-lg font-medium text-white">{{ userInfo.cookiesEnabled ? 'Yes' : 'No' }}</span>
+              </dd>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-violet-900/10 hover:shadow-2xl overflow-hidden relative">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-violet-500/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-fuchsia-500/10 rounded-full blur-2xl"></div>
+        <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+          <span class="inline-block p-2 bg-violet-500/10 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </span>
+          Performance Metrics
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Page Load Time</dt>
+            <dd class="text-2xl font-medium text-white">{{ performance.pageLoadTime }}
+              <span class="text-sm text-gray-400">ms</span>
+            </dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">DOM Content Loaded</dt>
+            <dd class="text-2xl font-medium text-white">{{ performance.domContentLoaded }}
+              <span class="text-sm text-gray-400">ms</span>
+            </dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">First Paint</dt>
+            <dd class="text-2xl font-medium text-white">{{ performance.firstPaint }}
+              <span class="text-sm text-gray-400">ms</span>
+            </dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">First Contentful Paint</dt>
+            <dd class="text-2xl font-medium text-white">{{ performance.firstContentfulPaint }}
+              <span class="text-sm text-gray-400">ms</span>
+            </dd>
+          </div>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-white mb-3">Resource Timing</h3>
+          <div class="bg-gray-800/30 rounded-xl border border-gray-700/30 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-xs uppercase bg-gray-800/50 text-gray-400">
+                  <tr>
+                    <th class="px-4 py-3">Resource</th>
+                    <th class="px-4 py-3 w-24">Duration</th>
+                    <th class="px-4 py-3 w-24">Size</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50">
+                  <tr v-for="(resource, index) in performance.resources.slice(0, 5)" :key="index" class="bg-gray-800/20 hover:bg-gray-800/40 transition-colors">
+                    <td class="px-4 py-3 truncate max-w-xs">{{ resource.name }}</td>
+                    <td class="px-4 py-3 text-amber-300">{{ resource.duration }} ms</td>
+                    <td class="px-4 py-3 text-emerald-300">{{ resource.size }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">♿ Accessibility</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <LabelValueItem label="Preferred Reduced Motion" :value="a11y.prefersReducedMotion ? 'Yes' : 'No'" />
-          <LabelValueItem label="Prefers Color Scheme" :value="a11y.prefersColorScheme" />
-          <LabelValueItem label="Prefers Contrast" :value="a11y.prefersContrast" />
-          <LabelValueItem label="Forced Colors" :value="a11y.forcedColors" />
-          <LabelValueItem label="Screen Reader Detected" :value="a11y.screenReader ? 'Likely Yes' : 'Not Detected'" />
-          <LabelValueItem label="Keyboard Navigation" :value="a11y.keyboardNav ? 'Active' : 'Not Active'" />
-        </dl>
-      </section>
-
-      <section class="bg-gray-800/50 backdrop-blur-md shadow-xl rounded-xl p-6">
-        <h2 class="text-2xl font-semibold text-sky-500 mb-4 border-b border-gray-700 pb-2">🕒 Visit History</h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <LabelValueItem label="First Visit" :value="history.firstVisit" />
-          <LabelValueItem label="Last Visit" :value="history.lastVisit" />
-          <LabelValueItem label="Visit Count" :value="history.visitCount" />
-          <LabelValueItem label="Referrer" :value="history.referrer || 'Direct / None'" />
-          <LabelValueItem label="Navigation Type" :value="history.navigationType" />
-          <LabelValueItem label="Session Duration" :value="history.sessionDuration" />
-        </dl>
-      </section>
-
-      <footer class="text-center pt-8 pb-4 text-sm text-gray-500">
-        <p>&copy; {{ new Date().getFullYear() }} WhoAmI.</p>
+      <footer class="text-center pt-10 pb-6">
+        <div class="flex justify-center space-x-4 mb-4">
+          <a href="https://www.github.com/jekrch/whoami" class="text-gray-400 hover:text-white transition-colors">
+            <span class="sr-only">GitHub</span>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-500 text-sm">
+          <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text font-medium">WhoAmI</span> 
+          — A digital fingerprinting dashboard &copy; {{ new Date().getFullYear() }}
+        </p>
       </footer>
     </div>
   </div>
@@ -546,32 +604,6 @@ const history = reactive({
   sessionStart: Date.now()
 });
 
-// Weather and Geographic Information
-const weather = reactive({
-  loading: true,
-  error: null as string | null,
-  location: '',
-  description: '',
-  temperature: 0,
-  feelsLike: 0,
-  humidity: 0,
-  windSpeed: 0,
-  windDirection: '',
-  pressure: 0,
-  visibility: 0,
-  clouds: 0,
-  sunrise: '',
-  sunset: '',
-  icon: '',
-  units: 'metric',
-  forecast: [] as Array<{
-    date: string;
-    icon: string;
-    tempMax: number;
-    tempMin: number;
-    description: string;
-  }>
-});
 
 const geo = reactive({
   loading: true,
@@ -605,233 +637,6 @@ const formatBytes = (bytes: number, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-};
-
-// Fetch weather data
-const fetchWeatherData = async (lat: number, lon: number) => {
-  try {
-    weather.loading = true;
-    weather.error = null;
-    
-    // Using OpenWeatherMap API (you'll need to replace 'YOUR_API_KEY' with an actual key)
-    // For demo purposes, we'll handle this differently
-    const apiKey = 'demo_mode'; // Replace with your actual API key
-    
-    if (apiKey === 'demo_mode') {
-      // Demo mode - simulate weather data based on location
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-      
-      const season = getSeason(lat);
-      const temp = getRandomTemp(season, lat);
-      
-      weather.location = `${userInfo.city || 'Your Location'}, ${userInfo.country || ''}`;
-      weather.description = getWeatherDesc(season);
-      weather.temperature = temp;
-      weather.feelsLike = temp + (Math.random() > 0.5 ? -2 : 2);
-      weather.humidity = Math.floor(Math.random() * 40) + 40; // 40-80%
-      weather.windSpeed = Math.floor(Math.random() * 20) + 5;
-      weather.windDirection = getWindDirection();
-      weather.pressure = Math.floor(Math.random() * 50) + 1000; // 1000-1050 hPa
-      weather.visibility = Math.floor(Math.random() * 5) + 5; // 5-10 km
-      weather.clouds = Math.floor(Math.random() * 100);
-      
-      // Set sunrise/sunset based on rough latitude
-      const now = new Date();
-      const baseDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-      
-      // Adjust sunrise/sunset times based on latitude and season
-      let sunriseHour = 6; // Default
-      let sunsetHour = 18; // Default
-      
-      if (Math.abs(lat) > 45) { // Far north or south
-        if (season === 'summer') {
-          sunriseHour = lat > 0 ? 4 : 7; // Earlier in northern summer, later in southern summer
-          sunsetHour = lat > 0 ? 21 : 17; // Later in northern summer, earlier in southern summer
-        } else if (season === 'winter') {
-          sunriseHour = lat > 0 ? 8 : 5; // Later in northern winter, earlier in southern winter
-          sunsetHour = lat > 0 ? 16 : 20; // Earlier in northern winter, later in southern winter
-        }
-      }
-      
-      const sunrise = new Date(baseDay);
-      sunrise.setHours(sunriseHour, Math.floor(Math.random() * 60));
-      const sunset = new Date(baseDay);
-      sunset.setHours(sunsetHour, Math.floor(Math.random() * 60));
-      
-      weather.sunrise = sunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      weather.sunset = sunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
-      // Set weather icon based on description
-      weather.icon = getWeatherIcon(weather.description);
-      
-      // Generate 5-day forecast
-      weather.forecast = [];
-      const forecastTemp = temp;
-      for (let i = 0; i < 5; i++) {
-        const forecastDate = new Date();
-        forecastDate.setDate(forecastDate.getDate() + i + 1);
-        
-        const variance = Math.floor(Math.random() * 6) - 3; // -3 to +3 degrees variance
-        const dayTemp = forecastTemp + variance;
-        const nightTemp = dayTemp - (Math.floor(Math.random() * 5) + 3); // 3-8 degrees cooler at night
-        
-        weather.forecast.push({
-          date: forecastDate.toLocaleDateString([], { weekday: 'short' }),
-          icon: getWeatherIcon(getWeatherDesc(season)),
-          tempMax: Math.round(dayTemp),
-          tempMin: Math.round(nightTemp),
-          description: getWeatherDesc(season)
-        });
-      }
-    } else {
-      // Actual API implementation would go here
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${weather.units}&appid=${apiKey}`);
-      const data = await response.json();
-      
-      if (data.cod !== 200) {
-        throw new Error(data.message || 'Failed to fetch weather data');
-      }
-      
-      weather.location = data.name + ', ' + data.sys.country;
-      weather.description = data.weather[0].description;
-      weather.temperature = Math.round(data.main.temp);
-      weather.feelsLike = Math.round(data.main.feels_like);
-      weather.humidity = data.main.humidity;
-      weather.windSpeed = data.wind.speed;
-      weather.windDirection = getWindDirectionFromDegrees(data.wind.deg);
-      weather.pressure = data.main.pressure;
-      weather.visibility = data.visibility / 1000; // Convert to km
-      weather.clouds = data.clouds.all;
-      
-      const sunriseDate = new Date(data.sys.sunrise * 1000);
-      const sunsetDate = new Date(data.sys.sunset * 1000);
-      weather.sunrise = sunriseDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      weather.sunset = sunsetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
-      weather.icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-      
-      // Fetch forecast
-      const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${weather.units}&appid=${apiKey}`);
-      const forecastData = await forecastResponse.json();
-      
-      if (forecastData.cod !== '200') {
-        throw new Error(forecastData.message || 'Failed to fetch forecast data');
-      }
-      
-      const dailyForecasts = new Map();
-      for (const item of forecastData.list) {
-        const date = new Date(item.dt * 1000);
-        const day = date.toLocaleDateString();
-        
-        if (!dailyForecasts.has(day)) {
-          dailyForecasts.set(day, {
-            date: date.toLocaleDateString([], { weekday: 'short' }),
-            icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
-            tempMax: Math.round(item.main.temp_max),
-            tempMin: Math.round(item.main.temp_min),
-            description: item.weather[0].description
-          });
-        } else {
-          const existing = dailyForecasts.get(day);
-          if (item.main.temp_max > existing.tempMax) {
-            existing.tempMax = Math.round(item.main.temp_max);
-          }
-          if (item.main.temp_min < existing.tempMin) {
-            existing.tempMin = Math.round(item.main.temp_min);
-          }
-        }
-      }
-      
-      weather.forecast = Array.from(dailyForecasts.values()).slice(0, 5);
-    }
-  } catch (error: any) {
-    console.error('Error fetching weather:', error);
-    weather.error = `Could not load weather data: ${error?.message || 'Unknown error'}`;
-  } finally {
-    weather.loading = false;
-  }
-};
-
-// Helper functions for demo mode
-const getSeason = (lat: number) => {
-  const month = new Date().getMonth();
-  
-  // Northern hemisphere
-  if (lat >= 0) {
-    if (month >= 2 && month <= 4) return 'spring';
-    if (month >= 5 && month <= 7) return 'summer';
-    if (month >= 8 && month <= 10) return 'autumn';
-    return 'winter';
-  } 
-  // Southern hemisphere
-  else {
-    if (month >= 2 && month <= 4) return 'autumn';
-    if (month >= 5 && month <= 7) return 'winter';
-    if (month >= 8 && month <= 10) return 'spring';
-    return 'summer';
-  }
-};
-
-const getRandomTemp = (season: string, lat: number) => {
-  const latAbs = Math.abs(lat);
-  let baseTemp = 20; // Default base temperature
-  
-  // Adjust base temperature based on latitude (cooler at high latitudes)
-  if (latAbs > 60) baseTemp -= 15;
-  else if (latAbs > 45) baseTemp -= 10;
-  else if (latAbs > 30) baseTemp -= 5;
-  else if (latAbs < 15) baseTemp += 5; // Warmer in tropics
-  
-  // Adjust for season
-  switch(season) {
-    case 'winter': baseTemp -= 15; break;
-    case 'autumn': baseTemp -= 5; break;
-    case 'spring': baseTemp += 0; break;
-    case 'summer': baseTemp += 10; break;
-  }
-  
-  // Add some randomness
-  const randomVariance = Math.floor(Math.random() * 10) - 5; // -5 to +5
-  return Math.round(baseTemp + randomVariance);
-};
-
-const getWeatherDesc = (season: string) => {
-  const descriptions = {
-    winter: ['Light snow', 'Freezing', 'Partly cloudy', 'Overcast', 'Clear sky', 'Snowfall'],
-    spring: ['Light rain', 'Scattered clouds', 'Partly cloudy', 'Moderate rain', 'Sunny intervals'],
-    summer: ['Sunny', 'Clear sky', 'Scattered clouds', 'Warm', 'Hot and humid', 'Thunderstorm'],
-    autumn: ['Cloudy', 'Light rain', 'Windy', 'Partly cloudy', 'Fog', 'Overcast']
-  };
-  
-  const options = descriptions[season as keyof typeof descriptions] || descriptions.spring;
-  return options[Math.floor(Math.random() * options.length)];
-};
-
-const getWindDirection = () => {
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  return directions[Math.floor(Math.random() * directions.length)];
-};
-
-const getWindDirectionFromDegrees = (deg: number) => {
-  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
-  return directions[Math.round((deg % 360) / 22.5) % 16];
-};
-
-const getWeatherIcon = (description: string) => {
-  // Map common descriptions to icon codes (using Font Awesome or similar)
-  const lowerDesc = description.toLowerCase();
-  
-  // For a demo, we could return simple emoji or placeholder images
-  if (lowerDesc.includes('rain')) return '🌧️';
-  if (lowerDesc.includes('snow')) return '❄️';
-  if (lowerDesc.includes('cloud')) return '☁️';
-  if (lowerDesc.includes('clear') || lowerDesc.includes('sunny')) return '☀️';
-  if (lowerDesc.includes('thunder')) return '⛈️';
-  if (lowerDesc.includes('fog') || lowerDesc.includes('mist')) return '🌫️';
-  if (lowerDesc.includes('wind')) return '💨';
-  
-  // Default
-  return '🌤️';
 };
 
 // Fetch geographic data
@@ -1374,8 +1179,7 @@ onMounted(async () => {
       userInfo.latitude = parseFloat(lat);
       userInfo.longitude = parseFloat(long);
       
-      // Fetch weather and geographic data once we have coordinates
-      fetchWeatherData(userInfo.latitude, userInfo.longitude);
+      // geographic data once we have coordinates
       fetchGeographicData(userInfo.latitude, userInfo.longitude);
     }
   } catch (error: any) {
@@ -1493,10 +1297,9 @@ onMounted(async () => {
   // --- Collect performance metrics ---
   collectPerformanceMetrics();
 
-  // Add a watcher to fetch weather if coordinates change later
+  // Add a watcher if coordinates change later
   watch(() => [userInfo.latitude, userInfo.longitude], ([newLat, newLong], [oldLat, oldLong]) => {
     if (newLat && newLong && (newLat !== oldLat || newLong !== oldLong)) {
-      fetchWeatherData(newLat, newLong);
       fetchGeographicData(newLat, newLong);
     }
   });
