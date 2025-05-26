@@ -96,4 +96,5 @@ export default defineComponent({
 #mapContainer {
   z-index: 0; /* Or a low value if you have z-index issues with other elements */
 }
+
 </style>
