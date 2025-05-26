@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-950 via-emerald-900 to-gray-800 text-gray-200 font-sans">
     <aside class="flex flex-col fixed top-0 left-0 z-40 w-[3.5em] lg:w-72 h-screen bg-gray-950/80 backdrop-blur-xl border-r border-gray-800/70 shadow-2xl transition-width duration-300 ease-in-out">
-      <div class="lg:p-6 lg:pt-8 p-4 mb-2 text-center">
+      <div class="lg:p-6 lg:pt-8 px-0 pt-6 mb-2 text-center">
         <a href="#" @click.prevent="scrollToTop" class="block hover:opacity-80 transition-opacity duration-200">
           <span class="text-3xl font-bold bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 text-transparent bg-clip-text hidden lg:inline">
             WhoAmI
@@ -11,12 +11,12 @@
           </span>
         </a>
       </div>
-      <nav class="flex-grow lg:px-4 px-2 pb-4 overflow-y-auto space-y-1.5">
+      <nav class="flex-grow lg:px-4 px-0 pb-4 overflow-y-auto space-y-1.5">
         <ul>
           <li v-for="item in navItems" :key="item.id">
             <a :href="'#' + item.id"
                @click.prevent="smoothScrollTo(item.id)"
-               class="flex items-center justify-center lg:justify-start p-3 rounded-xl text-gray-400 hover:bg-emerald-500/10 hover:text-emerald-300 group transition-all duration-200 h-12 lg:h-auto"
+               class="flex items-center justify-center lg:justify-start p-3 lg:rounded-xl text-gray-400 hover:bg-emerald-500/10 hover:text-emerald-300 group transition-all duration-200 h-12 lg:h-auto"
                :class="{ 'bg-emerald-500/20 text-emerald-200 shadow-md': activeSectionId === item.id }">
               <span v-html="item.icon" class="w-5 h-5 shrink-0 lg:mr-3"></span>
               <span class="text-sm font-medium hidden lg:inline">{{ item.label }}</span>
@@ -415,11 +415,19 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+const PADDING_OFFSET = 12; // Desired padding in pixels
+
 const smoothScrollTo = (id: string) => {
   const element = document.getElementById(id);
   if (element) {
     window.history.pushState(null, '', '#' + id);
-    element.scrollIntoView({ behavior: 'smooth' });
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - PADDING_OFFSET;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
     activeSectionId.value = id;
   }
 };
