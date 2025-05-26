@@ -42,7 +42,7 @@
         <p v-if="ipError" class="mt-4 text-sm text-red-400">{{ ipError }}</p>
       </section>
 
-    
+      
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-emerald-900/10 hover:shadow-2xl overflow-hidden relative">
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl"></div>
@@ -55,26 +55,13 @@
             Browser & OS
           </h2>
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Browser</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.browserNameVersion }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">OS</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.osNameVersion }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Platform</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.platform }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Language</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.language }}</dd>
-            </div>
+            <LabelValueItem label="Browser" :value="userInfo.browserNameVersion" />
+            <LabelValueItem label="OS" :value="userInfo.osNameVersion" />
+            <LabelValueItem label="Platform" :value="userInfo.platform" />
+            <LabelValueItem label="Language" :value="userInfo.language" />
           </dl>
-          <div class="mt-4 bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">User Agent</dt>
-            <dd class="text-sm font-medium text-gray-300 break-all">{{ userInfo.userAgent }}</dd>
+          <div class="mt-4">
+            <LabelValueItem label="User Agent" :value="userInfo.userAgent" valueClass="mt-1 text-sm text-gray-300 break-all" />
           </div>
         </section>
 
@@ -88,32 +75,13 @@
             </span>
             Display & Screen
           </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30 col-span-2">
-              <div class="flex flex-col md:flex-row justify-between">
-                <div>
-                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Screen Resolution</dt>
-                  <dd class="text-xl font-medium text-white">{{ userInfo.screenWidth }} × {{ userInfo.screenHeight }}</dd>
-                </div>
-                <div class="mt-4 md:mt-0">
-                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Window Size</dt>
-                  <dd class="text-xl font-medium text-white">{{ userInfo.windowInnerWidth }} × {{ userInfo.windowInnerHeight }}</dd>
-                </div>
-                <div class="mt-4 md:mt-0">
-                  <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Device Pixel Ratio</dt>
-                  <dd class="text-xl font-medium text-white">{{ userInfo.devicePixelRatio }}×</dd>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Color Depth</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.colorDepth }} bit</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Orientation</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.screenOrientation }}</dd>
-            </div>
-          </div>
+          <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <LabelValueItem label="Screen Resolution" :value="`${userInfo.screenWidth} × ${userInfo.screenHeight}`" valueClass="mt-1 text-xl font-medium text-white" />
+            <LabelValueItem label="Window Size" :value="`${userInfo.windowInnerWidth} × ${userInfo.windowInnerHeight}`" valueClass="mt-1 text-xl font-medium text-white" />
+            <LabelValueItem label="Device Pixel Ratio" :value="userInfo.devicePixelRatio" unit="×" valueClass="mt-1 text-xl font-medium text-white" />
+            <LabelValueItem label="Color Depth" :value="userInfo.colorDepth" unit=" bit" valueClass="mt-1 text-xl font-medium text-white" />
+            <LabelValueItem label="Orientation" :value="userInfo.screenOrientation" valueClass="mt-1 text-xl font-medium text-white" />
+          </dl>
         </section>
       </div>
 
@@ -129,62 +97,38 @@
             Hardware
           </h2>
           <dl class="space-y-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">CPU Cores</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.cpuCores }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Device Memory (RAM)</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.deviceMemory }}{{ typeof userInfo.deviceMemory === 'number' ? ' GB' : '' }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Max Touch Points</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.maxTouchPoints }}</dd>
-            </div>
+            <LabelValueItem label="CPU Cores" :value="userInfo.cpuCores" />
+            <LabelValueItem label="Device Memory (RAM)" :value="userInfo.deviceMemory" :unit="typeof userInfo.deviceMemory === 'number' ? ' GB' : ''" />
+            <LabelValueItem label="Max Touch Points" :value="userInfo.maxTouchPoints" />
           </dl>
         </section>
 
         <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-cyan-900/10 hover:shadow-2xl overflow-hidden relative">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
-        <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
-          <span class="inline-block p-2 bg-cyan-500/10 rounded-lg mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-            </svg>
-          </span>
-          Network Status
-        </h2>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Connection Type</dt>
-            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.connectionType }}</dd> 
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Effective Type</dt>
-            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.effectiveConnectionType }}</dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Downlink Speed</dt> 
-            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.downlink }}{{ typeof userInfo.downlink === 'number' ? ' Mbps' : (userInfo.downlink === 'N/A' ? '' : '') }}</dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Round Trip Time (RTT)</dt>
-            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.rtt }}{{ typeof userInfo.rtt === 'number' ? ' ms' : (userInfo.rtt === 'N/A' ? '' : '') }}</dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Data Saver Mode</dt>
-            <dd class="text-lg xl:text-xl font-medium text-white">{{ typeof userInfo.saveData === 'boolean' ? (userInfo.saveData ? 'Enabled' : 'Disabled') : 'N/A' }}</dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Online Status</dt>
-            <dd class="flex items-center">
-              <span class="inline-block w-3 h-3 rounded-full mr-2" :class="userInfo.isOnline ? 'bg-green-500' : 'bg-red-500'"></span>
-              <span class="text-lg xl:text-xl font-medium text-white">{{ userInfo.isOnline ? 'Online' : 'Offline' }}</span>
-            </dd>
-          </div>
-        </dl>
-
-      </section>
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
+          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+            <span class="inline-block p-2 bg-cyan-500/10 rounded-lg mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+              </svg>
+            </span>
+            Network Status
+          </h2>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
+            <LabelValueItem label="Connection Type" :value="userInfo.connectionType" />
+            <LabelValueItem label="Effective Type" :value="userInfo.effectiveConnectionType" />
+            <LabelValueItem label="Downlink Speed" :value="userInfo.downlink" :unit="typeof userInfo.downlink === 'number' ? ' Mbps' : ''" />
+            <LabelValueItem label="Round Trip Time (RTT)" :value="userInfo.rtt" :unit="typeof userInfo.rtt === 'number' ? ' ms' : ''" />
+            <LabelValueItem label="Data Saver Mode" :value="userInfo.saveData" />
+            <LabelValueItem label="Online Status" :value="userInfo.isOnline">
+              <template #default="{ value }">
+                <span class="flex items-center">
+                  <span class="inline-block w-3 h-3 rounded-full mr-2" :class="value ? 'bg-green-500' : 'bg-red-500'"></span>
+                  <span class="text-lg font-medium text-white">{{ value ? 'Online' : 'Offline' }}</span>
+                </span>
+              </template>
+            </LabelValueItem>
+          </dl>
+        </section>
 
         <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-rose-900/10 hover:shadow-2xl overflow-hidden relative">
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-2xl"></div>
@@ -197,22 +141,10 @@
             Date & Time
           </h2>
           <dl class="space-y-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Local Date & Time</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.localDateTime }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">UTC Date & Time</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.utcDateTime }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Timezone Offset</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.timezoneOffset }} minutes from UTC</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Session Duration</dt>
-              <dd class="text-xl font-medium text-white">{{ history.sessionDuration }}</dd>
-            </div>
+            <LabelValueItem label="Local Date & Time" :value="userInfo.localDateTime" />
+            <LabelValueItem label="UTC Date & Time" :value="userInfo.utcDateTime" />
+            <LabelValueItem label="Timezone Offset" :value="userInfo.timezoneOffset" unit=" minutes from UTC" />
+            <LabelValueItem label="Session Duration" :value="history.sessionDuration" />
           </dl>
         </section>
       </div>
@@ -229,46 +161,50 @@
             API Support & Permissions
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Geolocation</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="permissions.geolocation === 'granted' ? 'bg-green-500' : 
-                               permissions.geolocation === 'denied' ? 'bg-red-500' : 
-                               permissions.geolocation === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white capitalize">{{ permissions.geolocation }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Notifications</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="permissions.notifications === 'granted' ? 'bg-green-500' : 
-                               permissions.notifications === 'denied' ? 'bg-red-500' :
-                               permissions.notifications === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white capitalize">{{ permissions.notifications }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Camera</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="permissions.camera === 'granted' ? 'bg-green-500' : 
-                               permissions.camera === 'denied' ? 'bg-red-500' :
-                               permissions.camera === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white capitalize">{{ permissions.camera }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Microphone</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="permissions.microphone === 'granted' ? 'bg-green-500' : 
-                               permissions.microphone === 'denied' ? 'bg-red-500' :
-                               permissions.microphone === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white capitalize">{{ permissions.microphone }}</span>
-              </dd>
-            </div>
+            <LabelValueItem label="Geolocation" :value="permissions.geolocation">
+              <template #default="{ value: permValue }">
+                <span class="flex items-center">
+                  <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                        :class="permValue === 'granted' ? 'bg-green-500' : 
+                                 permValue === 'denied' ? 'bg-red-500' : 
+                                 permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
+                  <span class="text-lg font-medium text-white capitalize">{{ permValue || 'N/A' }}</span>
+                </span>
+              </template>
+            </LabelValueItem>
+            <LabelValueItem label="Notifications" :value="permissions.notifications">
+               <template #default="{ value: permValue }">
+                <span class="flex items-center">
+                  <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                        :class="permValue === 'granted' ? 'bg-green-500' : 
+                                 permValue === 'denied' ? 'bg-red-500' :
+                                 permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
+                  <span class="text-lg font-medium text-white capitalize">{{ permValue || 'N/A' }}</span>
+                </span>
+              </template>
+            </LabelValueItem>
+            <LabelValueItem label="Camera" :value="permissions.camera">
+              <template #default="{ value: permValue }">
+                <span class="flex items-center">
+                  <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                        :class="permValue === 'granted' ? 'bg-green-500' : 
+                                 permValue === 'denied' ? 'bg-red-500' :
+                                 permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
+                  <span class="text-lg font-medium text-white capitalize">{{ permValue || 'N/A' }}</span>
+                </span>
+              </template>
+            </LabelValueItem>
+            <LabelValueItem label="Microphone" :value="permissions.microphone">
+              <template #default="{ value: permValue }">
+                <span class="flex items-center">
+                  <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                        :class="permValue === 'granted' ? 'bg-green-500' : 
+                                 permValue === 'denied' ? 'bg-red-500' :
+                                 permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
+                  <span class="text-lg font-medium text-white capitalize">{{ permValue || 'N/A' }}</span>
+                </span>
+              </template>
+            </LabelValueItem>
           </div>
           <div class="mt-4">
             <h3 class="text-lg font-medium text-white mb-3">API Support</h3>
@@ -301,50 +237,36 @@
             Security Features
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">HTTPS Connection</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="security.isHttps ? 'bg-green-500' : 'bg-red-500'"></span>
-                <span class="text-lg font-medium text-white">{{ security.isHttps ? 'Secure' : 'Not Secure' }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Content Security Policy</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="security.csp && security.csp.startsWith('Set') ? 'bg-green-500' : 'bg-yellow-500'"></span>
-                <span class="text-lg font-medium text-white">{{ security.csp && security.csp.startsWith('Set') ? 'Enabled' : (security.csp || 'Not Detected') }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Referrer Policy</dt>
-              <dd class="text-lg font-medium text-white capitalize">{{ security.referrerPolicy || 'None' }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Ad Blocker</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="security.adBlocker ? 'bg-green-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white">{{ security.adBlocker ? 'Detected' : 'Not Detected' }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Incognito Mode</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="security.incognito ? 'bg-purple-500' : 'bg-gray-500'"></span>
-                <span class="text-lg font-medium text-white">{{ security.incognito ? 'Likely Yes' : 'Likely No' }}</span>
-              </dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Cookies Enabled</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" 
-                      :class="userInfo.cookiesEnabled ? 'bg-blue-500' : 'bg-red-500'"></span>
-                <span class="text-lg font-medium text-white">{{ userInfo.cookiesEnabled ? 'Yes' : 'No' }}</span>
-              </dd>
-            </div>
+            <LabelValueItem label="HTTPS Connection" :value="security.isHttps" />
+            <LabelValueItem label="Content Security Policy" :value="security.csp">
+               <template #default="{ value: cspValue }">
+                  <span class="flex items-center">
+                    <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                          :class="cspValue && cspValue.startsWith('Set') ? 'bg-green-500' : (cspValue ? 'bg-yellow-500' : 'bg-gray-500')"></span>
+                    <span class="text-lg font-medium text-white">{{ (cspValue && cspValue.startsWith('Set')) ? 'Enabled' : (cspValue || 'Not Detected') }}</span>
+                  </span>
+                </template>
+            </LabelValueItem>
+            <LabelValueItem label="Referrer Policy" :value="security.referrerPolicy || 'None'" />
+             <LabelValueItem label="Ad Blocker" :value="security.adBlocker">
+                <template #default="{ value: adBlockerValue }">
+                    <span class="flex items-center">
+                        <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                              :class="adBlockerValue ? 'bg-green-500' : 'bg-gray-500'"></span>
+                        <span class="text-lg font-medium text-white">{{ adBlockerValue ? 'Detected' : 'Not Detected' }}</span>
+                    </span>
+                </template>
+            </LabelValueItem>
+            <LabelValueItem label="Incognito Mode" :value="security.incognito">
+                <template #default="{ value: incognitoValue }">
+                    <span class="flex items-center">
+                        <span class="inline-block w-3 h-3 rounded-full mr-2" 
+                              :class="incognitoValue ? 'bg-purple-500' : 'bg-gray-500'"></span>
+                        <span class="text-lg font-medium text-white">{{ incognitoValue ? 'Likely Yes' : 'Likely No' }}</span>
+                    </span>
+                </template>
+            </LabelValueItem>
+            <LabelValueItem label="Cookies Enabled" :value="userInfo.cookiesEnabled" />
           </div>
         </section>
       </div>
@@ -361,30 +283,18 @@
           Performance Metrics
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Page Load Time</dt>
-            <dd class="text-2xl font-medium text-white">{{ performanceMetrics.pageLoadTime >= 0 ? performanceMetrics.pageLoadTime : 'N/A' }}
-              <span class="text-sm text-gray-400" v-if="performanceMetrics.pageLoadTime >= 0">ms</span>
-            </dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">DOM Content Loaded</dt>
-            <dd class="text-2xl font-medium text-white">{{ performanceMetrics.domContentLoaded >= 0 ? performanceMetrics.domContentLoaded : 'N/A' }}
-              <span class="text-sm text-gray-400" v-if="performanceMetrics.domContentLoaded >= 0">ms</span>
-            </dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">First Paint (FP)</dt>
-            <dd class="text-2xl font-medium text-white">{{ performanceMetrics.firstPaint >= 0 ? performanceMetrics.firstPaint : 'N/A' }}
-              <span class="text-sm text-gray-400" v-if="performanceMetrics.firstPaint >= 0">ms</span>
-            </dd>
-          </div>
-          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">First Contentful Paint (FCP)</dt>
-            <dd class="text-2xl font-medium text-white">{{ performanceMetrics.firstContentfulPaint >= 0 ? performanceMetrics.firstContentfulPaint : 'N/A' }}
-              <span class="text-sm text-gray-400" v-if="performanceMetrics.firstContentfulPaint >= 0">ms</span>
-            </dd>
-          </div>
+          <LabelValueItem label="Page Load Time" :value="performanceMetrics.pageLoadTime >= 0 ? performanceMetrics.pageLoadTime : 'N/A'" 
+                          :unit="performanceMetrics.pageLoadTime >=0 ? ' ms' : ''" 
+                          valueClass="mt-1 text-2xl font-medium text-white" />
+          <LabelValueItem label="DOM Content Loaded" :value="performanceMetrics.domContentLoaded >= 0 ? performanceMetrics.domContentLoaded : 'N/A'" 
+                          :unit="performanceMetrics.domContentLoaded >= 0 ? ' ms' : ''"
+                          valueClass="mt-1 text-2xl font-medium text-white" />
+          <LabelValueItem label="First Paint (FP)" :value="performanceMetrics.firstPaint >= 0 ? performanceMetrics.firstPaint : 'N/A'" 
+                          :unit="performanceMetrics.firstPaint >= 0 ? ' ms' : ''"
+                          valueClass="mt-1 text-2xl font-medium text-white" />
+          <LabelValueItem label="First Contentful Paint (FCP)" :value="performanceMetrics.firstContentfulPaint >= 0 ? performanceMetrics.firstContentfulPaint : 'N/A'" 
+                          :unit="performanceMetrics.firstContentfulPaint >= 0 ? ' ms' : ''"
+                          valueClass="mt-1 text-2xl font-medium text-white" />
         </div>
         <div class="mt-6">
           <h3 class="text-lg font-medium text-white mb-3">Resource Timing (Top 5)</h3>
@@ -443,22 +353,10 @@ const {
   userInfo,
   permissions,
   apiSupport,
-  // sensors, // Uncomment if data from sensors is directly used in template
-  // storageInfo, // Uncomment if data from storageInfo is directly used in template
-  // media, // Uncomment if data from media is directly used in template
   performanceMetrics,
   security,
-  // fonts, // Uncomment if data from fonts is directly used in template
-  // a11y, // Uncomment if data from a11y is directly used in template
   history,
 } = useDigitalFingerprint();
 
-// The composable handles its own initialization logic (similar to onMounted).
-// All reactive data is provided by the composable.
 </script>
 
-<style scoped>
-.bg-gray-900 {
-  background-image: linear-gradient(to bottom right, #111827, #1f2937);
-}
-</style>
