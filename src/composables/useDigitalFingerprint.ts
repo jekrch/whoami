@@ -555,7 +555,6 @@ export function useDigitalFingerprint() {
             isLoading.value = false; // Move isLoading here for more accurate "fully loaded"
         }, 500);
 
-
         window.addEventListener('resize', () => {
             userInfo.windowInnerWidth = window.innerWidth;
             userInfo.windowInnerHeight = window.innerHeight;

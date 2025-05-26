@@ -145,37 +145,46 @@
         </section>
 
         <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-cyan-900/10 hover:shadow-2xl overflow-hidden relative">
-          <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
-          <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
-            <span class="inline-block p-2 bg-cyan-500/10 rounded-lg mr-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-              </svg>
-            </span>
-            Network Status
-          </h2>
-          <dl class="space-y-4">
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Connection Type</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.connectionType }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Effective Type</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.effectiveConnectionType }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Downlink</dt>
-              <dd class="text-xl font-medium text-white">{{ userInfo.downlink }}{{ typeof userInfo.downlink === 'number' ? ' Mbps' : '' }}</dd>
-            </div>
-            <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
-              <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Online Status</dt>
-              <dd class="flex items-center">
-                <span class="inline-block w-3 h-3 rounded-full mr-2" :class="userInfo.isOnline ? 'bg-green-500' : 'bg-red-500'"></span>
-                <span class="text-xl font-medium text-white">{{ userInfo.isOnline ? 'Online' : 'Offline' }}</span>
-              </dd>
-            </div>
-          </dl>
-        </section>
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
+        <h2 class="text-2xl font-medium text-white mb-5 flex items-center">
+          <span class="inline-block p-2 bg-cyan-500/10 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+            </svg>
+          </span>
+          Network Status
+        </h2>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Connection Type</dt>
+            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.connectionType }}</dd> 
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Effective Type</dt>
+            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.effectiveConnectionType }}</dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Downlink Speed</dt> 
+            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.downlink }}{{ typeof userInfo.downlink === 'number' ? ' Mbps' : (userInfo.downlink === 'N/A' ? '' : '') }}</dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Round Trip Time (RTT)</dt>
+            <dd class="text-lg xl:text-xl font-medium text-white">{{ userInfo.rtt }}{{ typeof userInfo.rtt === 'number' ? ' ms' : (userInfo.rtt === 'N/A' ? '' : '') }}</dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Data Saver Mode</dt>
+            <dd class="text-lg xl:text-xl font-medium text-white">{{ typeof userInfo.saveData === 'boolean' ? (userInfo.saveData ? 'Enabled' : 'Disabled') : 'N/A' }}</dd>
+          </div>
+          <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+            <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">Online Status</dt>
+            <dd class="flex items-center">
+              <span class="inline-block w-3 h-3 rounded-full mr-2" :class="userInfo.isOnline ? 'bg-green-500' : 'bg-red-500'"></span>
+              <span class="text-lg xl:text-xl font-medium text-white">{{ userInfo.isOnline ? 'Online' : 'Offline' }}</span>
+            </dd>
+          </div>
+        </dl>
+
+      </section>
 
         <section class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-rose-900/10 hover:shadow-2xl overflow-hidden relative">
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-2xl"></div>
