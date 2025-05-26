@@ -1,6 +1,8 @@
 <template>
-  <div class="p-3 bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out">
-    <dt class="text-sm font-medium text-sky-400 truncate">{{ label }}</dt>
+
+
+  <div class="bg-gray-800/20 p-4 rounded-xl border border-gray-700/30">
+    <dt class="text-xs uppercase tracking-wider text-gray-500 mb-1">{{ label }}</dt>
     <dd class="mt-1 text-sm text-gray-300 break-words">
       <template v-if="value === undefined || value === null || value === ''">
         <span class="italic text-gray-500">N/A</span>
@@ -15,7 +17,7 @@
         <span v-else class="italic text-gray-500">Empty</span>
       </template>
       <template v-else-if="typeof value === 'object' && value !== null">
-        <pre class="text-xs whitespace-pre-wrap">{{ JSON.stringify(value, null, 2) }}</pre>
+        <pre class="text-xl font-medium text-white">{{ JSON.stringify(value, null, 2) }}</pre>
       </template>
       <template v-else>
         {{ value }}
