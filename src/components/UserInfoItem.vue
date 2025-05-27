@@ -49,6 +49,143 @@
         </div>
 
         <main v-else class="space-y-6 sm:space-y-8 md:space-y-10">
+          <section id="section-fingerprint" class="backdrop-blur-lg bg-gradient-to-br from-emerald-900/40 to-green-900/40 rounded-2xl p-4 sm:p-6 shadow-xl border border-emerald-800/50 transition-all hover:shadow-emerald-900/20 hover:shadow-2xl overflow-hidden relative">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-green-500/20 rounded-full blur-2xl"></div>
+            <h2 class="text-xl sm:text-2xl font-medium text-white mb-4 sm:mb-5 flex items-center">
+              <span class="inline-block p-2 bg-emerald-500/10 rounded-lg mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                </svg>
+              </span>
+              Digital Fingerprint
+            </h2>
+            <div v-if="fingerprint.hash" class="bg-emerald-900/30 rounded-xl p-4 border border-emerald-700/30 relative">
+              <p class="text-xs sm:text-sm text-emerald-300 mb-2">Your unique fingerprint hash:</p>
+              <div class="flex items-center gap-2">
+                <p class="text-lg sm:text-xl font-mono text-white break-all flex-1">{{ fingerprint.hash }}</p>
+                <button 
+                  @click="copyFingerprint"
+                  class="p-2 bg-emerald-600/20 hover:bg-emerald-600/30 rounded-lg transition-colors group shrink-0"
+                  :title="copied ? 'Copied!' : 'Copy fingerprint'"
+                >
+                  <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400 group-hover:text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+                <!-- <button
+                  @click="openValueModal(fingerprint.hash, 'Digital Fingerprint Hash')"
+                  class="p-2 bg-blue-600/20 hover:bg-blue-600/30 rounded-lg transition-colors group shrink-0"
+                  title="View in details modal"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400 group-hover:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button> -->
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <button 
+                @click="showTechnicalDetails = !showTechnicalDetails"
+                class="flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" :class="{ 'rotate-90': showTechnicalDetails }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                <span>{{ showTechnicalDetails ? 'Hide' : 'Show' }} Technical Details</span>
+              </button>
+              
+              <div v-if="showTechnicalDetails" class="mt-4 bg-gray-900/50 rounded-xl p-4 border border-gray-800/50 text-sm space-y-4">
+                <h3 class="text-base font-medium text-emerald-300 mb-3">Fingerprinting Algorithm Details</h3>
+                
+                <div class="space-y-3 text-gray-300">
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">1. Canvas Fingerprinting</h4>
+                    <p class="text-xs leading-relaxed">Renders text and shapes onto an HTML5 canvas element using specific fonts, emojis, and drawing operations. The rendering output varies based on GPU, drivers, OS font rendering, and anti-aliasing settings. We use:</p>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li>Text: "Canvas fingerprint cwm4n8t5i3n9" with font "11pt no-real-font-123"</li>
+                      <li>Unicode emoji: 🚀 and mathematical symbols: 𝓤𝓷𝓲𝓬𝓸𝓭𝓮</li>
+                      <li>Geometric shapes with composite operations (multiply blend mode)</li>
+                      <li>Linear gradient from red→green→blue</li>
+                      <li>Export via canvas.toDataURL() for base64 encoded PNG</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">2. Audio Context Fingerprinting</h4>
+                    <p class="text-xs leading-relaxed">Creates an audio signal processing graph that produces slightly different outputs based on hardware and software audio stack:</p>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li>OscillatorNode: Triangle wave at 10kHz frequency</li>
+                      <li>AnalyserNode: FFT size 2048 for frequency analysis</li>
+                      <li>ScriptProcessorNode: 4096 sample buffer processing</li>
+                      <li>Captures first 100 samples of processed audio output</li>
+                      <li>Differences arise from audio hardware, sample rate conversion, and DSP implementations</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">3. WebGL Fingerprinting</h4>
+                    <p class="text-xs leading-relaxed">Queries GPU and graphics driver information through WebGL API:</p>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li>WEBGL_debug_renderer_info extension for unmasked vendor/renderer</li>
+                      <li>Maximum texture sizes, viewport dimensions, and anisotropic filtering</li>
+                      <li>Supported extensions list (varies by GPU capabilities)</li>
+                      <li>Shader precision and vertex attribute limits</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">4. Font Detection</h4>
+                    <p class="text-xs leading-relaxed">Detects installed system fonts by measuring text dimensions:</p>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li>Tests 60+ common fonts across Windows, macOS, and Linux</li>
+                      <li>Renders test string "mmmmmmmmmmlli" in 72px size</li>
+                      <li>Compares dimensions against baseline fonts (monospace, sans-serif, serif)</li>
+                      <li>Font availability reveals OS and installed software</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">5. Additional Entropy Sources</h4>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li><strong>Screen:</strong> Resolution, color depth, pixel ratio, orientation</li>
+                      <li><strong>Hardware:</strong> CPU cores, device memory, touch points</li>
+                      <li><strong>Timezone:</strong> Offset and IANA timezone identifier</li>
+                      <li><strong>Media Devices:</strong> Count and IDs of audio/video devices</li>
+                      <li><strong>Navigator:</strong> Language, platform, vendor strings</li>
+                      <li><strong>Speech Synthesis:</strong> Available TTS voices and engines</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-emerald-400 font-medium mb-1">6. Hashing Algorithm</h4>
+                    <p class="text-xs leading-relaxed">Final fingerprint generation:</p>
+                    <ul class="list-disc list-inside text-xs mt-1 ml-4 space-y-1 text-gray-400">
+                      <li>Combines all component data into a JSON structure</li>
+                      <li>Sorts object keys for consistent ordering</li>
+                      <li>Encodes as UTF-8 and computes SHA-256 hash</li>
+                      <li>Outputs 64-character hexadecimal string</li>
+                      <li>Collision probability: ~1 in 2^256 (practically impossible)</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="mt-4 p-3 bg-amber-900/20 rounded-lg border border-amber-700/30">
+                    <p class="text-xs text-amber-300">
+                      <strong>Privacy Note:</strong> This fingerprint is calculated locally in your browser. No data is sent to any server. The fingerprint can be used to track users across websites, which is why privacy-focused browsers implement anti-fingerprinting measures.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <p class="mt-4 text-sm text-gray-400">This hash is generated from various browser and device characteristics to create a unique identifier.</p>
+          </section>
+
           <section id="section-ip" class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-emerald-900/10 hover:shadow-2xl overflow-hidden relative">
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl"></div>
             <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-green-500/10 rounded-full blur-2xl"></div>
@@ -70,6 +207,9 @@
               <LabelValueItem label="Longitude" :value="userInfo.longitude?.toFixed(4)" />
               <LabelValueItem label="ISP / Organization" :value="userInfo.isp" />
               <LabelValueItem label="Timezone (from IP)" :value="userInfo.ipTimezone" />
+              <LabelValueItem label="Timezone (JS)" :value="timezoneInfo.timezone" />
+              <LabelValueItem label="Timezone Abbr" :value="timezoneInfo.timezoneAbbr" />
+              <LabelValueItem v-if="localIPs.length > 0" label="Local IPs" :value="localIPs.join(', ')" />
             </dl>
             <div v-if="userInfo.latitude && userInfo.longitude" class="mt-4 sm:mt-6 rounded-xl overflow-hidden shadow-lg border border-gray-800/50">
               <MapDisplay :latitude="userInfo.latitude" :longitude="userInfo.longitude" :zoom-level="15" />
@@ -95,7 +235,16 @@
                   <LabelValueItem label="Language" :value="userInfo.language" />
                 </dl>
                 <div class="mt-4">
-                  <LabelValueItem label="User Agent" :value="userInfo.userAgent" valueClass="mt-1 text-xs sm:text-sm text-gray-300 break-all" />
+                  <dt class="text-xs sm:text-sm font-medium text-emerald-400 mb-0.5 sm:mb-1">User Agent</dt>
+                  <dd class="mt-1 text-xs sm:text-sm text-gray-300 break-all value-class-placeholder"> {{ truncateText(userInfo.userAgent, 100) }}
+                    <button
+                      v-if="userInfo.userAgent && userInfo.userAgent.length > 100"
+                      @click="openValueModal(userInfo.userAgent, 'User Agent')"
+                      class="ml-1 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                    >
+                      (View Full)
+                    </button>
+                  </dd>
                 </div>
             </section>
             <section id="section-display" class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-pink-900/10 hover:shadow-2xl overflow-hidden relative">
@@ -117,6 +266,149 @@
               </dl>
             </section>
           </div>
+
+          <section id="section-advanced-fingerprint" class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-orange-900/10 hover:shadow-2xl overflow-hidden relative">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-red-500/10 rounded-full blur-2xl"></div>
+            <h2 class="text-xl sm:text-2xl font-medium text-white mb-4 sm:mb-5 flex items-center">
+              <span class="inline-block p-2 bg-orange-500/10 rounded-lg mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+              </span>
+              Advanced Fingerprinting
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+                <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                  <span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                  Canvas Fingerprint
+                </h3>
+                <div v-if="canvasFingerprint.supported && canvasFingerprint.fingerprint" class="space-y-2">
+                  <p class="text-xs text-gray-400">Unique canvas rendering signature</p>
+                  <p class="text-xs font-mono text-gray-300 break-all">
+                    {{ truncateText(canvasFingerprint.fingerprint, 60) }}
+                    <button
+                      v-if="canvasFingerprint.fingerprint && canvasFingerprint.fingerprint.length > 60"
+                      @click="openValueModal(canvasFingerprint.fingerprint, 'Canvas Fingerprint')"
+                      class="ml-1 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                    >
+                      (View Full)
+                    </button>
+                  </p>
+                </div>
+                <p v-else class="text-sm text-gray-500">Not supported</p>
+              </div>
+
+              <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+                <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                  <span class="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  Audio Fingerprint
+                </h3>
+                <div v-if="audioFingerprint.supported && audioFingerprint.fingerprint" class="space-y-2">
+                  <p class="text-xs text-gray-400">Audio context signature</p>
+                  <p class="text-xs font-mono text-gray-300 break-all">
+                    {{ truncateText(audioFingerprint.fingerprint, 60) }}
+                     <button
+                      v-if="audioFingerprint.fingerprint && audioFingerprint.fingerprint.length > 60"
+                      @click="openValueModal(audioFingerprint.fingerprint, 'Audio Fingerprint')"
+                      class="ml-1 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                    >
+                      (View Full)
+                    </button>
+                  </p>
+                </div>
+                <p v-else class="text-sm text-gray-500">Not supported</p>
+              </div>
+
+              <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+                <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                  <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  WebGL Details
+                </h3>
+                <div v-if="webglFingerprint.supported" class="space-y-2">
+                  <LabelValueItem label="Vendor" :value="webglFingerprint.vendor" valueClass="text-sm" />
+                  <LabelValueItem label="Renderer" :value="webglFingerprint.renderer" valueClass="text-sm" />
+                  <LabelValueItem label="Max Texture Size" :value="webglFingerprint.maxTextureSize" valueClass="text-sm" />
+                  <p class="text-xs text-gray-400 mt-2">{{ webglFingerprint.extensions?.length || 0 }} extensions supported
+                    <button
+                      v-if="webglFingerprint.extensions && webglFingerprint.extensions.length > 0"
+                      @click="openValueModal(webglFingerprint.extensions, 'WebGL Extensions')"
+                      class="ml-1 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                    >
+                      (View All)
+                    </button>
+                  </p>
+                </div>
+                <p v-else class="text-sm text-gray-500">Not supported</p>
+              </div>
+
+              <div class="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+                <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                  <span class="inline-block w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                  Media Devices
+                </h3>
+                <div v-if="mediaDevices.available" class="space-y-2">
+                  <LabelValueItem label="Audio Inputs" :value="mediaDevices.audioInputs" valueClass="text-sm" />
+                  <LabelValueItem label="Audio Outputs" :value="mediaDevices.audioOutputs" valueClass="text-sm" />
+                  <LabelValueItem label="Video Inputs" :value="mediaDevices.videoInputs" valueClass="text-sm" />
+                  <p class="text-xs text-gray-400 mt-2">{{ mediaDevices.deviceIds.length }} unique device IDs
+                     <button
+                        v-if="mediaDevices.deviceIds && mediaDevices.deviceIds.length > 0"
+                        @click="openValueModal(mediaDevices.deviceIds, 'Media Device IDs')"
+                        class="ml-1 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                      >
+                        (View All)
+                      </button>
+                  </p>
+                </div>
+                <p v-else class="text-sm text-gray-500">{{ mediaDevices.error || 'Not available' }}</p>
+              </div>
+            </div>
+
+            <div v-if="plugins.length > 0" class="mt-4 bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+              <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                Browser Plugins
+                  <button
+                    @click="openValueModal(plugins, 'Browser Plugins')"
+                    class="ml-2 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                  >
+                    (View All Details)
+                  </button>
+              </h3>
+              <p class="text-xs text-gray-400 mb-2">{{ plugins.length }} plugin{{ plugins.length !== 1 ? 's' : '' }} detected</p>
+              <div class="space-y-2 max-h-62 overflow-y-auto">
+                <div v-for="(plugin, index) in plugins" :key="index" class="text-xs bg-gray-900/50 rounded p-2">
+                  <p class="text-emerald-300 font-medium">{{ plugin.name }}</p>
+                  <p class="text-gray-400 text-xs">{{ truncateText(plugin.description, 50) }}</p>
+                  <p v-if="plugin.filename !== 'N/A'" class="text-gray-500 text-xs">{{ plugin.filename }}</p>
+                </div>
+              </div>
+              <p class="text-xs text-amber-400 mt-2">
+                <strong>Note:</strong> Modern browsers limit plugin detection for privacy. Only certain plugins may be visible.
+              </p>
+            </div>
+
+            <div v-if="speechVoices.available" class="mt-4 bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+              <h3 class="text-base sm:text-lg font-medium text-white mb-3 flex items-center">
+                <span class="inline-block w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                Speech Synthesis Voices
+                 <button
+                    @click="openValueModal(speechVoices.voices, 'Speech Synthesis Voices')"
+                    class="ml-2 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                  >
+                    (View All Details)
+                  </button>
+              </h3>
+              <p class="text-sm text-gray-300">{{ speechVoices.count }} voices available</p>
+              <div class="mt-2 max-h-32 overflow-y-auto">
+                <div v-for="(voice, index) in speechVoices.voices" :key="index" class="text-xs text-gray-400 py-1">
+                  {{ voice.name }} ({{ voice.lang }}) {{ voice.default ? '- Default' : '' }}
+                </div>                
+              </div>
+            </div>
+          </section>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
             <section id="section-hardware" class="backdrop-blur-lg bg-gray-900/40 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-800/50 transition-all hover:shadow-amber-900/10 hover:shadow-2xl overflow-hidden relative">
@@ -209,9 +501,9 @@
                     <template #default="{ value: permValue }">
                      <span class="flex items-center">
                         <span class="inline-block w-3 h-3 rounded-full mr-2"
-                               :class="permValue === 'granted' ? 'bg-green-500' :
-                                        permValue === 'denied' ? 'bg-red-500' :
-                                        permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
+                              :class="permValue === 'granted' ? 'bg-green-500' :
+                                       permValue === 'denied' ? 'bg-red-500' :
+                                       permValue === 'prompt' ? 'bg-yellow-500' : 'bg-gray-500'"></span>
                         <span class="text-base sm:text-lg font-medium text-white capitalize">{{ permValue || 'N/A' }}</span>
                      </span>
                     </template>
@@ -275,7 +567,7 @@
                    <template #default="{ value: cspValue }">
                      <span class="flex items-center">
                         <span class="inline-block w-3 h-3 rounded-full mr-2"
-                               :class="cspValue && cspValue.startsWith('Set') ? 'bg-green-500' : (cspValue ? 'bg-yellow-500' : 'bg-gray-500')"></span>
+                              :class="cspValue && cspValue.startsWith('Set') ? 'bg-green-500' : (cspValue ? 'bg-yellow-500' : 'bg-gray-500')"></span>
                         <span class="text-base sm:text-lg font-medium text-white">{{ (cspValue && cspValue.startsWith('Set')) ? 'Enabled' : (cspValue || 'Not Detected') }}</span>
                      </span>
                    </template>
@@ -317,20 +609,28 @@
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
               <LabelValueItem label="Page Load Time" :value="performanceMetrics.pageLoadTime >= 0 ? performanceMetrics.pageLoadTime : 'N/A'"
-                               :unit="performanceMetrics.pageLoadTime >=0 ? ' ms' : ''"
-                               valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
+                              :unit="performanceMetrics.pageLoadTime >=0 ? ' ms' : ''"
+                              valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
               <LabelValueItem label="DOM Content Loaded" :value="performanceMetrics.domContentLoaded >= 0 ? performanceMetrics.domContentLoaded : 'N/A'"
-                               :unit="performanceMetrics.domContentLoaded >= 0 ? ' ms' : ''"
-                               valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
+                              :unit="performanceMetrics.domContentLoaded >= 0 ? ' ms' : ''"
+                              valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
               <LabelValueItem label="First Paint (FP)" :value="performanceMetrics.firstPaint >= 0 ? performanceMetrics.firstPaint : 'N/A'"
-                               :unit="performanceMetrics.firstPaint >= 0 ? ' ms' : ''"
-                               valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
+                              :unit="performanceMetrics.firstPaint >= 0 ? ' ms' : ''"
+                              valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
               <LabelValueItem label="First Contentful Paint (FCP)" :value="performanceMetrics.firstContentfulPaint >= 0 ? performanceMetrics.firstContentfulPaint : 'N/A'"
-                               :unit="performanceMetrics.firstContentfulPaint >= 0 ? ' ms' : ''"
-                               valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
+                              :unit="performanceMetrics.firstContentfulPaint >= 0 ? ' ms' : ''"
+                              valueClass="mt-1 text-xl sm:text-2xl font-medium text-white" />
             </div>
             <div class="mt-4 sm:mt-6">
-              <h3 class="text-base sm:text-lg font-medium text-white mb-3">Resource Timing (Top 5)</h3>
+              <h3 class="text-base sm:text-lg font-medium text-white mb-3">Resource Timing (Top 5)
+                <button
+                  v-if="performanceMetrics.resources && performanceMetrics.resources.length > 0"
+                  @click="openValueModal(performanceMetrics.resources, 'All Resource Timings')"
+                  class="ml-2 text-emerald-400 hover:text-emerald-300 text-xs focus:outline-none underline"
+                >
+                  (View All)
+                </button>
+              </h3>
               <div v-if="performanceMetrics.resources.length > 0" class="bg-gray-800/30 rounded-xl border border-gray-700/30 overflow-hidden">
                 <div class="overflow-x-auto">
                   <table class="w-full text-sm text-left">
@@ -372,12 +672,55 @@
         </footer>
       </div>
     </div>
+
+    <teleport to="body">
+      <transition name="modal-fade">
+        <div
+          v-if="showValueModal"
+          @click.self="closeValueModal"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          aria-modal="true"
+          role="dialog"
+        >
+          <div class="bg-gray-900 border border-emerald-700/50 rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden">
+            <header class="flex items-center justify-between p-4 border-b border-gray-800/60 shrink-0">
+              <h3 class="text-lg font-medium text-emerald-300">{{ modalTitle }}</h3>
+              <button @click="closeValueModal" class="text-gray-400 hover:text-white transition-colors" aria-label="Close modal">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </header>
+            <main class="p-4 flex-grow overflow-y-auto">
+              <pre class="text-sm text-gray-300 whitespace-pre-wrap break-all bg-gray-800/40 p-3 rounded-md modal-pre-content">{{ modalDisplayedValue }}</pre>
+            </main>
+            <footer class="p-4 border-t border-gray-800/60 flex justify-end gap-3 shrink-0">
+              <button
+                @click="copyModalValueToClipboard"
+                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+              >
+                <svg v-if="!modalValueCopied" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                {{ modalValueCopied ? 'Copied!' : 'Copy to Clipboard' }}
+              </button>
+              <button
+                @click="closeValueModal"
+                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-medium rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </footer>
+          </div>
+        </div>
+      </transition>
+    </teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-// ... (script content remains the same as in the previous response)
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 // @ts-ignore: Assuming LabelValueItem.vue and MapDisplay.vue are present
 import LabelValueItem from './LabelValueItem.vue';
 // @ts-ignore
@@ -393,12 +736,94 @@ const {
   performanceMetrics,
   security,
   history,
+  // New fingerprinting data
+  canvasFingerprint,
+  audioFingerprint,
+  webglFingerprint,
+  mediaDevices,
+  timezoneInfo,
+  speechVoices,
+  localIPs,
+  plugins,
+  fingerprint
 } = useDigitalFingerprint();
 
+// Component state
+const showTechnicalDetails = ref(false);
+const copied = ref(false); // For main fingerprint hash direct copy button
+
+// Modal State
+const showValueModal = ref(false);
+const modalValue = ref<string | object | any[] | null | undefined>('');
+const modalTitle = ref('');
+const modalValueCopied = ref(false);
+
+// Truncate Text Helper for display purposes, except for main hash
+const truncateText = (text: string | undefined | null, maxLength: number): string => {
+  if (!text) return 'N/A';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+};
+
+// Modal Control Functions
+const openValueModal = (value: string | object | any[] | null | undefined, title: string) => {
+  modalValue.value = value;
+  modalTitle.value = title;
+  showValueModal.value = true;
+  modalValueCopied.value = false; // Reset copy status when modal opens
+};
+
+const closeValueModal = () => {
+  showValueModal.value = false;
+};
+
+// Computed property for modal display to handle JSON stringification
+const modalDisplayedValue = computed(() => {
+  if (typeof modalValue.value === 'string') {
+    return modalValue.value;
+  }
+  if (modalValue.value === null || modalValue.value === undefined) {
+    return 'N/A';
+  }
+  // For objects or arrays, pretty-print JSON
+  return JSON.stringify(modalValue.value, null, 2);
+});
+
+const copyModalValueToClipboard = async () => {
+  if (!modalValue.value && typeof modalValue.value !== 'object') return; // Allow copying empty string, but not null/undefined directly for text
+  try {
+    await navigator.clipboard.writeText(modalDisplayedValue.value);
+    modalValueCopied.value = true;
+    setTimeout(() => {
+      modalValueCopied.value = false;
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy modal content:', err);
+    // Optionally: alert('Failed to copy content.');
+  }
+};
+
+// Copy main fingerprint function (existing) - copies the full hash
+const copyFingerprint = async () => {
+  if (!fingerprint.hash) return;
+  
+  try {
+    await navigator.clipboard.writeText(fingerprint.hash);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy fingerprint:', err);
+  }
+};
+
 const navItems = ref([
+  { id: 'section-fingerprint', label: 'Digital Fingerprint', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" /></svg>' },
   { id: 'section-ip', label: 'IP & Location', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>' },
   { id: 'section-browser-os', label: 'Browser & OS', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>' },
   { id: 'section-display', label: 'Display & Screen', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>' },
+  { id: 'section-advanced-fingerprint', label: 'Advanced Fingerprinting', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>' },
   { id: 'section-hardware', label: 'Hardware', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>' },
   { id: 'section-network', label: 'Network Status', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" /></svg>' },
   { id: 'section-datetime', label: 'Date & Time', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
@@ -440,7 +865,7 @@ const initIntersectionObserver = () => {
   }
 
   const options = {
-    rootMargin: '-20% 0px -50% 0px',
+    rootMargin: '-20% 0px -50% 0px', // Adjust as needed for active section highlighting
     threshold: 0,
   };
 
@@ -448,10 +873,6 @@ const initIntersectionObserver = () => {
     let intersectingEntry = entries.find(entry => entry.isIntersecting);
     if (intersectingEntry) {
         activeSectionId.value = intersectingEntry.target.id;
-    } else {
-        // Optional: Clear activeSectionId or set to first if nothing is "active" by this logic
-        // This part depends on desired behavior when scrolling past all sections or to the very top/bottom
-        // For now, we only set when one IS intersecting based on the top part of the viewport.
     }
   }, options);
 
@@ -465,28 +886,40 @@ const initIntersectionObserver = () => {
 
 watch(isLoading, (newIsLoading) => {
   if (!newIsLoading) {
+    // Use nextTick or a small timeout to ensure DOM is updated after isLoading changes
+    // For IntersectionObserver, it's better to ensure elements are rendered.
     setTimeout(initIntersectionObserver, 100); 
   }
 }, { immediate: true });
 
+// Handle Escape key for modal
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && showValueModal.value) {
+    closeValueModal();
+  }
+};
 
 onMounted(() => {
   if (!isLoading.value) {
+      // Ensure DOM is ready for observer
       setTimeout(initIntersectionObserver, 100);
   }
+  // Set active section based on hash or default to first item
   if (window.location.hash) {
     const initialSectionId = window.location.hash.substring(1);
     const element = document.getElementById(initialSectionId);
+    // Check if the hash corresponds to a valid nav item
     if (element && navItems.value.some(item => item.id === initialSectionId)) {
         activeSectionId.value = initialSectionId;
+        // Optionally, scroll to it if not perfectly aligned (smoothScrollTo handles this)
+        // smoothScrollTo(initialSectionId); 
     } else if (navItems.value.length > 0) {
-      activeSectionId.value = navItems.value[0].id;
-      // window.history.replaceState(null, '', '#' + navItems.value[0].id); // Optionally update URL
+      activeSectionId.value = navItems.value[0].id; // Default to first if hash is invalid
     }
   } else if (navItems.value.length > 0) {
-    activeSectionId.value = navItems.value[0].id;
-    // window.history.replaceState(null, '', '#' + navItems.value[0].id); // Optionally update URL
+    activeSectionId.value = navItems.value[0].id; // Default to first nav item
   }
+  document.addEventListener('keydown', handleKeydown);
 });
 
 onUnmounted(() => {
@@ -494,6 +927,7 @@ onUnmounted(() => {
     observedElements.forEach(el => observer.value!.unobserve(el));
     observer.value.disconnect();
   }
+  document.removeEventListener('keydown', handleKeydown);
 });
 </script>
 
@@ -508,6 +942,22 @@ html {
 .transition-margin {
   transition-property: margin-left;
 }
+
+/* Modal fade transition */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+/* Style for pre tag in modal for better font rendering */
+.modal-pre-content { /* Applied class to the pre tag in modal */
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
 /* For very small screens, you might want to make fonts even smaller if needed */
 @media (max-width: 380px) { /* example: 'xs' screens or similar custom breakpoint */
   .xs-text-xs { /* You'd apply this class where needed or adjust base styles */
@@ -518,5 +968,11 @@ html {
   main section h2 {
     font-size: 1.125rem; /* equivalent to text-lg */
   }
+}
+
+/* Ensure dt/dd behave as expected for User Agent custom display */
+#section-browser-os .value-class-placeholder {
+    /* This class was a placeholder, the styles are directly on the dd:
+       mt-1 text-xs sm:text-sm text-gray-300 break-all */
 }
 </style>

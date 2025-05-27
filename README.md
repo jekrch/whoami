@@ -8,7 +8,7 @@ The application is built with Vue.js, Vite, and TypeScript, and styled with Tail
 
 1.  Clone the repository:
     ```
-    git clone [https://github.com/jekrch/whoami.git](https://github.com/jekrch/whoami.git)
+    git clone https://github.com/jekrch/whoami.git
     cd whoami
     ```
 
