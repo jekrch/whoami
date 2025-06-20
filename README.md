@@ -2,7 +2,7 @@
 
 This is a web app designed to gather and display a comprehensive digital fingerprint of the user's browser and device. It collects a wide array of information, including IP address, location, browser features, hardware details, network status, security settings, and more. This data can be used to understand what information a website can learn about its visitors.
 
-The application is built with Vue.js, Vite, and TypeScript, and styled with TailwindCSS.
+The application is built with Vue.js, Vite, and TypeScript, and styled with Tailwind.
 
 ## Getting Started
 
